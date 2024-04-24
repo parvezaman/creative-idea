@@ -953,10 +953,10 @@
                         <div>
                             <h1 class="text-xl font-bold leading-tight text-center text-white">
                                 Welcome to <span class="text-stone-900">Creative Idea</span> - Your Premier Source for
-                                Electronic Solutions
+                                Electronics
                             </h1>
                             <p>
-                                Unlock the power of innovation with [Your Company Name], your trusted partner in the
+                                Unlock the power of innovation with Creative Idea, your trusted partner in the
                                 world of electronics. Whether you're in need of top-of-the-line printers, cutting-edge
                                 monitors, or reliable cables to connect it all, we've got you covered.
                             </p>
@@ -966,7 +966,7 @@
 
                             <div id="default-carousel" class="relative" data-carousel="static">
 
-                                <div class="overflow-hidden relative h-56 rounded-lg sm:h-64 xl:h-80 2xl:h-96">
+                                <div class="overflow-hidden relative h-48 rounded-lg ">
 
                                     <div class="hidden duration-700 ease-in-out" data-carousel-item>
                                         <span
