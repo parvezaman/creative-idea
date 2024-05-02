@@ -28,7 +28,15 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers|max:255',
+            'date_of_birth' => 'nullable|date',
+            'customer_address' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'company_address' => 'nullable|string|max:255',
+            'mobile' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255'
         ]);
+
 
         // dd($validatedData);
 
@@ -51,6 +59,13 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'date_of_birth' => 'nullable|date',
+            'customer_address' => 'nullable|string|max:255',
+            'company_name' => 'nullable|string|max:255',
+            'company_address' => 'nullable|string|max:255',
+            'mobile' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+            'website' => 'nullable|string|max:255'
         ]);
 
         // Update the customer record in the database

@@ -30,7 +30,7 @@
         @endif
 
         <!-- Page Content -->
-        <main>
+        <main class="p-4">
             {{ $main }}
         </main>
     </div>
