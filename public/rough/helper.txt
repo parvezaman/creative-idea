@@ -1,9 +1,38 @@
-products columns
---------------------
+products table columns
+------------------------
 'name',
 'description',
+vendor_name
+vendor_invoice_no
 'purchase_price',
 'stock',
 'vat',
 'tax',
 'warranty',
+
+
+
+
+invoices table columns
+------------------------
+id
+invoice_number
+subject
+customer_id
+product_id
+quantity
+purchase_price
+vat
+tax
+total_amount
+in_words
+created_at
+updated_at
+
+
+vendors table 
+----------------
+name 
+product_type
+address
+phone

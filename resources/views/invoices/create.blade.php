@@ -4,6 +4,7 @@
         <!-- add customer form -->
         <div class="container mx-auto">
             <h2 class="text-2xl font-semibold mb-4">Add Product</h2>
+
             <!-- Customer creation form -->
             <form method="POST" action="{{ route('products.store') }}" class="max-w-md mx-auto">
                 @csrf
@@ -18,23 +19,6 @@
                     <input type="text"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         id="description" name="description" placeholder="Enter description">
-                </div>
-
-                <label for="vendor_id" class="block text-sm font-medium text-gray-700">Select Vendor Name</label>
-                <select name="vendor_id"
-                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                    <option value="">Select Vendor</option>
-                    @foreach($vendors as $vendor)
-                    <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
-                    @endforeach
-                </select>
-
-                <div class="mb-4">
-                    <label for="vendor_invoice_no" class="block text-sm font-medium text-gray-700">Vendor Invoice
-                        No</label>
-                    <input type="text"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="vendor_invoice_no" name="vendor_invoice_no" placeholder="Enter invoice number">
                 </div>
                 <div class="mb-4">
                     <label for="purchase_price" class="block text-sm font-medium text-gray-700">Purchase price</label>

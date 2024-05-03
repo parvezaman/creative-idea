@@ -21,6 +21,24 @@
                         id="description" name="description" placeholder="Enter description"
                         value="{{$product->description}}">
                 </div>
+
+                <label for="vendor_id" class="block text-sm font-medium text-gray-700">Select Vendor Name</label>
+                <select name="vendor_id" value="{{$product->vendor_id}}"
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    <option value="">Select Vendor</option>
+                    @foreach($vendors as $vendor)
+                    <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                    @endforeach
+                </select>
+
+                <div class="mb-4">
+                    <label for="vendor_invoice_no" class="block text-sm font-medium text-gray-700">Vendor Invoice
+                        No</label>
+                    <input type="text" value="{{$product->vendor_invoice_no}}"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        id="vendor_invoice_no" name="vendor_invoice_no" placeholder="Enter invoice number">
+                </div>
+
                 <div class="mb-4">
                     <label for="purchase_price" class="block text-sm font-medium text-gray-700">Purchase price</label>
                     <input type="text"

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 
@@ -18,6 +19,16 @@ Route::get('/dashboard', function () {
     return view('customers.customers');
 })->middleware(['auth', 'verified'])->name('customers');
  */
+
+// vendor related wuthenticated routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/vendors', [VendorController::class, 'index'])->name('vendors.index');
+    Route::get('/vendors/create', [VendorController::class, 'create'])->name('vendors.create');
+    Route::post('/vendors', [VendorController::class, 'store'])->name('vendors.store');
+    Route::get('/vendors/{vendor}/edit', [VendorController::class, 'edit'])->name('vendors.edit');
+    Route::put('/vendors/{vendor}', [VendorController::class, 'update'])->name('vendors.update');
+    Route::delete('/vendors/{vendor}', [VendorController::class, 'destroy'])->name('vendors.destroy');
+});
 
 // customer related wuthenticated routes
 Route::middleware(['auth'])->group(function () {
@@ -39,6 +50,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
     Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
+
+
+// invoice related wuthenticated routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/invoices', [ProductController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [ProductController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [ProductController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}/edit', [ProductController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{invoice}', [ProductController::class, 'update'])->name('invoices.update');
+    Route::delete('/invoices/{invoice}', [ProductController::class, 'destroy'])->name('invoices.destroy');
+});
+
 
 
 // profile related authenticated routes

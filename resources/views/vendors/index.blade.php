@@ -89,7 +89,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="add-customer-container">
-            <a href="{{ route('products.create') }}" class="button-base edit-button add-button">+ Add Product</a>
+            <a href="{{ route('vendors.create') }}" class="button-base edit-button add-button">+ Add Vendors</a>
         </div>
     </x-slot>
 
@@ -100,33 +100,25 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Description</th>
-                        <th>Vendor Name</th>
-                        <th>Purchase Price</th>
-                        <th>Stock</th>
-                        <th>Vat</th>
-                        <th>Tax</th>
-                        <th>warranty</th>
+                        <th>Product Type</th>
+                        <th>Address</th>
+                        <th>Phone</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $product)
+                    @foreach($vendors as $vendor)
                     <tr>
-                        <td>{{ $product->id }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->description }}</td>
-                        <td>{{ $product->vendor_name }}</td>
-                        <td>{{ $product->purchase_price }}</td>
-                        <td>{{ $product->stock }}</td>
-                        <td>{{ $product->vat }}</td>
-                        <td>{{ $product->tax }}</td>
-                        <td>{{ $product->warranty }}</td>
+                        <td>{{ $vendor->id }}</td>
+                        <td>{{ $vendor->name }}</td>
+                        <td>{{ $vendor-> product_type}}</td>
+                        <td>{{ $vendor-> address}}</td>
+                        <td>{{ $vendor-> phone}}</td>
                         <td>
                             <div class="button-container">
-                                <a href="{{ route('products.edit', $product) }}" class="edit-button">Edit</a>
-                                <form id="delete-form" action="{{ route('products.destroy', $product) }}" method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this product?')">
+                                <a href="{{ route('vendors.edit', $vendor) }}" class="edit-button">Edit</a>
+                                <form id="delete-form" action="{{ route('vendors.destroy', $vendor) }}" method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this vendor?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="delete-button">Delete</button>
@@ -143,7 +135,7 @@
 
 <script>
     function confirmDelete() {
-        if (confirm('Are you sure you want to delete this product?')) {
+        if (confirm('Are you sure you want to delete this vendor?')) {
             document.getElementById('delete-form').submit();
         }
     }

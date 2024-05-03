@@ -101,7 +101,6 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <th>Vendor Name</th>
                         <th>Purchase Price</th>
                         <th>Stock</th>
                         <th>Vat</th>
@@ -116,7 +115,6 @@
                         <td>{{ $product->id }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->description }}</td>
-                        <td>{{ $product->vendor_name }}</td>
                         <td>{{ $product->purchase_price }}</td>
                         <td>{{ $product->stock }}</td>
                         <td>{{ $product->vat }}</td>
