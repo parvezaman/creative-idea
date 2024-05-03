@@ -1,0 +1,9 @@
+products columns
+--------------------
+'name',
+'description',
+'purchase_price',
+'stock',
+'vat',
+'tax',
+'warranty',
