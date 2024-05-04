@@ -22,4 +22,9 @@ class Product extends Model
         'warranty',
         'vendor_invoice_no'
     ];
+
+    public function vendor()
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 }
