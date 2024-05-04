@@ -101,7 +101,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Email</th>
-                        <th>Date of Birth</th>
+                        {{-- <th>Date of Birth</th> --}}
                         <th>Customer Address</th>
                         <th>Company Name</th>
                         <th>Company Address</th>
@@ -117,7 +117,7 @@
                         <td>{{ $customer->id }}</td>
                         <td>{{ $customer->name }}</td>
                         <td>{{ $customer->email }}</td>
-                        <td>{{ $customer->date_of_birth }}</td>
+                        {{-- <td>{{ $customer->date_of_birth }}</td> --}}
                         <td>{{ $customer->customer_address }}</td>
                         <td>{{ $customer->company_name }}</td>
                         <td>{{ $customer->company_address }}</td>

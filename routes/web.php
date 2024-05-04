@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VendorController;
@@ -54,12 +55,12 @@ Route::middleware(['auth'])->group(function () {
 
 // invoice related wuthenticated routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/invoices', [ProductController::class, 'index'])->name('invoices.index');
-    Route::get('/invoices/create', [ProductController::class, 'create'])->name('invoices.create');
-    Route::post('/invoices', [ProductController::class, 'store'])->name('invoices.store');
-    Route::get('/invoices/{invoice}/edit', [ProductController::class, 'edit'])->name('invoices.edit');
-    Route::put('/invoices/{invoice}', [ProductController::class, 'update'])->name('invoices.update');
-    Route::delete('/invoices/{invoice}', [ProductController::class, 'destroy'])->name('invoices.destroy');
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/invoices/{invoice}/edit', [InvoiceController::class, 'edit'])->name('invoices.edit');
+    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
+    Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 });
 
 
