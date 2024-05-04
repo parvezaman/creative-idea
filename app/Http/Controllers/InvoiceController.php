@@ -40,64 +40,182 @@ class InvoiceController extends Controller
         return 'Creative-Idea-INV-' . $nextNumber;
     }
 
+    private function convertNumberToEnglishWords($number)
+    {
+        $ones = array(
+            0 => 'zero',
+            1 => 'one',
+            2 => 'two',
+            3 => 'three',
+            4 => 'four',
+            5 => 'five',
+            6 => 'six',
+            7 => 'seven',
+            8 => 'eight',
+            9 => 'nine',
+            10 => 'ten',
+            11 => 'eleven',
+            12 => 'twelve',
+            13 => 'thirteen',
+            14 => 'fourteen',
+            15 => 'fifteen',
+            16 => 'sixteen',
+            17 => 'seventeen',
+            18 => 'eighteen',
+            19 => 'nineteen'
+        );
+        $tens = array(
+            0 => 'zero',
+            1 => 'ten',
+            2 => 'twenty',
+            3 => 'thirty',
+            4 => 'forty',
+            5 => 'fifty',
+            6 => 'sixty',
+            7 => 'seventy',
+            8 => 'eighty',
+            9 => 'ninety'
+        );
+        $hundreds = array(
+            'hundred',
+            'thousand',
+            'million',
+            'billion',
+            'trillion',
+            'quadrillion',
+            'quintillion',
+            'sextillion',
+            'septillion',
+            'octillion',
+            'nonillion',
+            'decillion',
+            'undecillion',
+            'duodecillion',
+            'tredecillion',
+            'quattuordecillion',
+            'quindecillion'
+        );
+
+        if ($number == 0) {
+            return 'zero';
+        }
+
+        $output = '';
+        $chunkCount = 0;
+
+        while ($number > 0) {
+            $chunk = $number % 1000;
+            if ($chunk != 0) {
+                $chunkStr = '';
+                if ($chunk >= 100) {
+                    $chunkStr .= $ones[($chunk / 100)] . ' ' . $hundreds[0] . ' ';
+                }
+                if ($chunk % 100 < 20) {
+                    $chunkStr .= $ones[$chunk % 100];
+                } else {
+                    $chunkStr .= $tens[($chunk % 100) / 10];
+                    if ($chunk % 10 > 0) {
+                        $chunkStr .= '-' . $ones[$chunk % 10];
+                    }
+                }
+                $output = $chunkStr . ' ' . $hundreds[$chunkCount] . ' ' . $output;
+            }
+            $chunkCount++;
+            $number = floor($number / 1000);
+        }
+
+        return trim($output);
+    }
+
+
 
     public function store(Request $request)
     {
 
-        dd($request);
+        // dd($request);
 
 
         // Validate the request data
         $validatedData = $request->validate([
             'invoice_number' => 'required|string',
             'subject' => 'required|string',
-            'customer_id' => 'required|exists:customers,id',
-            'products' => 'required|array',
-            'products.*.product_id' => 'required|exists:products,id',
-            'products.*.quantity' => 'required|integer|min:1',
+            'customer_id' => 'required|string',
+            'product_id' => 'required|array',
+            'quantity' => 'required|array'
+            // 'products' => 'required|array',
+            // 'products.*.product_id' => 'required|exists:products,id',
+            // 'products.*.quantity' => 'required|integer|min:1',
             // 'vendor_invoice_no' => 'required|string'
         ]);
 
+        // dd($validatedData);
+
+        $productIds = $request->input('product_id');
+        $products = Product::whereIn('id', $productIds)->get();
+
+        $quantity = $request->input('quantity'); // Assuming quantity is submitted with product ID as key
+        $i = 0;
+
+
         try {
-            // Calculate total amount
-            $totalAmount = 0;
+            // Begin database transaction
+            DB::beginTransaction();
 
-            foreach ($validatedData['products'] as $productData) {
-                $product = Product::findOrFail($productData['product_id']);
-                $totalAmount += $product->purchase_price * $productData['quantity'];
-            }
+            // Store each product separately with the same invoice number
+            foreach ($products as $product) {
+                // Calculate total price for the current product
+                $purchasePrice = $product->purchase_price;
+                $vat = $product->vat;
+                $tax = $product->tax;
+                $warranty = $product->warranty;
 
-            // Calculate VAT and Tax (Assuming they are percentages)
-            $vat = $totalAmount * 0.10; // Example: 10% VAT
-            $tax = $totalAmount * 0.05; // Example: 5% Tax
+                $productQuantity = $quantity[$i]; // Assuming quantity is submitted with product ID as key
+                $i++;
 
-            // Create a new invoice
-            $invoice = new Invoice([
-                'invoice_number' => $validatedData['invoice_number'],
-                'subject' => $validatedData['subject'],
-                'customer_id' => $validatedData['customer_id'],
-                'purchase_price' => $totalAmount,
-                'vat' => $vat,
-                'tax' => $tax,
-                'total_amount' => $totalAmount + $vat + $tax,
-                // 'in_words' => $validatedData['in_words'],
-                // 'warranty' => $validatedData['warranty'],
-                // 'vendor_invoice_no' => $validatedData['vendor_invoice_no']
-            ]);
+                $totalVat = $purchasePrice * ($vat / 100) * $productQuantity;
+                $totalTax = $purchasePrice * ($tax / 100) * $productQuantity;
 
-            // Save the invoice
-            $invoice->save();
+                $totalPrice = $purchasePrice + $totalVat + $totalTax;
 
-            // Attach products to the invoice
-            foreach ($validatedData['products'] as $productData) {
-                $invoice->products()->attach($productData['product_id'], [
-                    'quantity' => $productData['quantity']
+                $roundedTotalPrice = (int) (round($totalPrice));
+
+                // dd($roundedTotalPrice);
+
+                $totalInWords = $this->convertNumberToEnglishWords($roundedTotalPrice);
+                // $totalPrice *= $quantity;
+
+                // dd($totalInWords);
+
+                // Create a new invoice entry for the current product
+                $invoice = new Invoice([
+                    'invoice_number' => $validatedData['invoice_number'],
+                    'subject' => $validatedData['subject'],
+                    'customer_id' => $validatedData['customer_id'],
+                    'product_id' => $product->id, // Associate the current product with the invoice
+                    'quantity' => $productQuantity,
+                    'purchase_price' => $purchasePrice,
+                    'vat' => $totalVat,
+                    'tax' => $totalTax,
+                    'total_amount' => $totalPrice,
+                    'in_words' => $totalInWords,
+                    'warranty' => $warranty
                 ]);
+
+                // dd($invoice);
+
+                // Save the invoice entry
+                $invoice->save();
             }
+
+            // Commit the database transaction
+            DB::commit();
 
             return redirect()->route('invoices.index')->with('success', 'Invoice added successfully!');
         } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => 'Failed to add invoice. Please try again.']);
+            // Rollback the database transaction in case of an error
+            DB::rollBack();
+
+            return back()->withInput()->withErrors(['error' => 'Failed to add invoice. Please try again!' . $e]);
         }
     }
 

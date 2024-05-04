@@ -18,12 +18,12 @@ class Invoice extends Model
         'customer_id',
         'product_id',
         'quantity',
-        // 'purchase_price',
-        // 'vat',
-        // 'tax',
-        // 'total_amount',
-        // 'in_words',
-        // 'warranty'
+        'purchase_price',
+        'vat',
+        'tax',
+        'total_amount',
+        'in_words',
+        'warranty'
     ];
 
 }
