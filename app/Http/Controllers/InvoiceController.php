@@ -64,9 +64,8 @@ class InvoiceController extends Controller
             18 => 'eighteen',
             19 => 'nineteen'
         );
+
         $tens = array(
-            0 => 'zero',
-            1 => 'ten',
             2 => 'twenty',
             3 => 'thirty',
             4 => 'forty',
@@ -76,55 +75,56 @@ class InvoiceController extends Controller
             8 => 'eighty',
             9 => 'ninety'
         );
-        $hundreds = array(
-            'hundred',
+
+        $scales = array(
+            '',
             'thousand',
             'million',
             'billion',
-            'trillion',
-            'quadrillion',
-            'quintillion',
-            'sextillion',
-            'septillion',
-            'octillion',
-            'nonillion',
-            'decillion',
-            'undecillion',
-            'duodecillion',
-            'tredecillion',
-            'quattuordecillion',
-            'quindecillion'
+            'trillion'
         );
 
         if ($number == 0) {
-            return 'zero';
+            return $ones[0];
         }
 
-        $output = '';
-        $chunkCount = 0;
+        $result = '';
 
-        while ($number > 0) {
-            $chunk = $number % 1000;
-            if ($chunk != 0) {
-                $chunkStr = '';
-                if ($chunk >= 100) {
-                    $chunkStr .= $ones[($chunk / 100)] . ' ' . $hundreds[0] . ' ';
-                }
-                if ($chunk % 100 < 20) {
-                    $chunkStr .= $ones[$chunk % 100];
+        $groups = array_reverse(str_split(str_pad($number, ceil(strlen($number) / 3) * 3, '0', STR_PAD_LEFT), 3));
+
+        foreach ($groups as $key => $group) {
+            $group = (int) $group;
+
+            if ($group == 0) {
+                continue;
+            }
+
+            $hundred = (int) ($group / 100);
+            $remainder = $group % 100;
+            $ten = (int) ($remainder / 10);
+            $one = $remainder % 10;
+
+            $groupResult = '';
+
+            if ($hundred > 0) {
+                $groupResult .= $ones[$hundred] . ' hundred';
+            }
+
+            if ($remainder > 0) {
+                if ($remainder < 20) {
+                    $groupResult .= ($groupResult ? ' ' : '') . $ones[$remainder];
                 } else {
-                    $chunkStr .= $tens[($chunk % 100) / 10];
-                    if ($chunk % 10 > 0) {
-                        $chunkStr .= '-' . $ones[$chunk % 10];
+                    $groupResult .= ($groupResult ? ' ' : '') . $tens[$ten];
+                    if ($one > 0) {
+                        $groupResult .= '-' . $ones[$one];
                     }
                 }
-                $output = $chunkStr . ' ' . $hundreds[$chunkCount] . ' ' . $output;
             }
-            $chunkCount++;
-            $number = floor($number / 1000);
+
+            $result = $groupResult . ($key > 0 && !empty($groupResult) ? ' ' . $scales[$key] . ' ' : '') . $result;
         }
 
-        return trim($output);
+        return trim($result);
     }
 
 
@@ -174,8 +174,9 @@ class InvoiceController extends Controller
 
                 $totalVat = $purchasePrice * ($vat / 100) * $productQuantity;
                 $totalTax = $purchasePrice * ($tax / 100) * $productQuantity;
+                $purchasePriceTotal = $purchasePrice * $productQuantity;
 
-                $totalPrice = $purchasePrice + $totalVat + $totalTax;
+                $totalPrice = $purchasePriceTotal + $totalVat + $totalTax;
 
                 $roundedTotalPrice = (int) (round($totalPrice));
 
@@ -193,10 +194,11 @@ class InvoiceController extends Controller
                     'customer_id' => $validatedData['customer_id'],
                     'product_id' => $product->id, // Associate the current product with the invoice
                     'quantity' => $productQuantity,
-                    'purchase_price' => $purchasePrice,
+                    'purchase_price' => $purchasePriceTotal,
                     'vat' => $totalVat,
                     'tax' => $totalTax,
                     'total_amount' => $totalPrice,
+                    // 'roundedTotal' => $roundedTotalPrice, // to comment later
                     'in_words' => $totalInWords,
                     'warranty' => $warranty
                 ]);

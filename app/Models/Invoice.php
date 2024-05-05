@@ -22,6 +22,7 @@ class Invoice extends Model
         'vat',
         'tax',
         'total_amount',
+        // 'roundedTotal',
         'in_words',
         'warranty'
     ];
