@@ -16,6 +16,7 @@
     .edit-button {
         background-color: #4CAF50;
         color: white;
+        margin-right: 8px;
     }
 
     .delete-button {
@@ -102,9 +103,11 @@
                         <th>Invoice Number</th>
                         {{-- <th>Subject</th> --}}
                         <th>Customer</th>
-                        <th>Products</th>
-                        <th>Vat</th>
-                        <th>Tax</th>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Vat(%)</th>
+                        <th>Tax(%)</th>
                         <th>Total Amount</th>
                         <th>warranty</th>
                         <th>Actions</th>
@@ -116,14 +119,17 @@
                         <td>{{ $invoice->id }}</td>
                         <td>{{ $invoice->invoice_number }}</td>
                         {{-- <td>{{ $invoice->subject }}</td> --}}
-                        <td>{{ $invoice->customer_id }}</td>
-                        <td>{{ $invoice->product_id }}</td>
+                        <td>{{ $invoice->customer->name }}</td>
+                        <td>{{ $invoice->product->name }}</td>
+                        <td>{{ $invoice->quantity }}</td>
+                        <td>{{ $invoice->per_unit_price }}</td>
                         <td>{{ $invoice->vat}}</td>
                         <td>{{ $invoice->tax }}</td>
                         <td>{{ $invoice->total_amount }}</td>
                         <td>{{ $invoice->warranty }}</td>
                         <td>
                             <div class="button-container">
+                                <a href="{{ route('invoices.get', $invoice) }}" class="edit-button">Invoice</a>
                                 <a href="{{ route('invoices.edit', $invoice) }}" class="edit-button">Edit</a>
                                 <form id="delete-form" action="{{ route('invoices.destroy', $invoice) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this invoice?')">

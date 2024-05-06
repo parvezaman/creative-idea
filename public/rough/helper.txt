@@ -5,6 +5,7 @@ products table columns
 vendor_name
 vendor_invoice_no
 'purchase_price',
+'sell_price',
 'stock',
 'vat',
 'tax',
@@ -21,6 +22,7 @@ subject
 customer_id
 product_id
 quantity
+per_unit_price
 purchase_price
 vat
 tax

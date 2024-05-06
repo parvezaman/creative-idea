@@ -16,6 +16,7 @@ class Product extends Model
         'description',
         'vendor_id',
         'purchase_price',
+        'sell_price',
         'stock',
         'vat',
         'tax',

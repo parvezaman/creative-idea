@@ -103,6 +103,7 @@
                         <th>Description</th>
                         <th>Vendor Name</th>
                         <th>Purchase Price</th>
+                        <th>Sell Price</th>
                         <th>Stock</th>
                         <th>Vat</th>
                         <th>Tax</th>
@@ -118,6 +119,7 @@
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->vendor->name }}</td>
                         <td>{{ $product->purchase_price }}</td>
+                        <td>{{ $product->sell_price }}</td>
                         <td>{{ $product->stock }}</td>
                         <td>{{ $product->vat }}</td>
                         <td>{{ $product->tax }}</td>

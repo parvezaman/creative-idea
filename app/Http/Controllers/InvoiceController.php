@@ -13,14 +13,17 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::all();
-        // $products = Invoice::with('vendor')->get();
+        $invoices = Invoice::with('product', 'customer')->get();
         return view('invoices.index', compact('invoices'));
+    }
+
+    public function getInvoice()
+    {
+        return view('invoices.invoice');
     }
 
     public function create()
     {
-        // $invoiceNumber = 'Creative-Idea-' . date('YmdHis');
         $lastInvoice = Invoice::latest()->first();
         $lastNumber = $lastInvoice ? $lastInvoice->invoice_number : 'INV1000';
 
@@ -132,89 +135,68 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request);
-
-
-        // Validate the request data
         $validatedData = $request->validate([
             'invoice_number' => 'required|string',
             'subject' => 'required|string',
             'customer_id' => 'required|string',
             'product_id' => 'required|array',
             'quantity' => 'required|array'
-            // 'products' => 'required|array',
-            // 'products.*.product_id' => 'required|exists:products,id',
-            // 'products.*.quantity' => 'required|integer|min:1',
-            // 'vendor_invoice_no' => 'required|string'
         ]);
-
-        // dd($validatedData);
 
         $productIds = $request->input('product_id');
         $products = Product::whereIn('id', $productIds)->get();
 
-        $quantity = $request->input('quantity'); // Assuming quantity is submitted with product ID as key
+        $quantity = $request->input('quantity');
         $i = 0;
 
 
         try {
-            // Begin database transaction
             DB::beginTransaction();
 
-            // Store each product separately with the same invoice number
             foreach ($products as $product) {
-                // Calculate total price for the current product
                 $purchasePrice = $product->purchase_price;
+                $sellPrice = $product->sell_price;
                 $vat = $product->vat;
                 $tax = $product->tax;
                 $warranty = $product->warranty;
 
-                $productQuantity = $quantity[$i]; // Assuming quantity is submitted with product ID as key
+                $productQuantity = $quantity[$i];
                 $i++;
 
-                $totalVat = $purchasePrice * ($vat / 100) * $productQuantity;
-                $totalTax = $purchasePrice * ($tax / 100) * $productQuantity;
-                $purchasePriceTotal = $purchasePrice * $productQuantity;
+                $totalVat = $sellPrice * ($vat / 100) * $productQuantity;
+                $totalTax = $sellPrice * ($tax / 100) * $productQuantity;
+                $sellPriceTotal = $sellPrice * $productQuantity;
 
-                $totalPrice = $purchasePriceTotal + $totalVat + $totalTax;
+                $totalPrice = $sellPriceTotal + $totalVat + $totalTax;
 
                 $roundedTotalPrice = (int) (round($totalPrice));
 
-                // dd($roundedTotalPrice);
 
                 $totalInWords = $this->convertNumberToEnglishWords($roundedTotalPrice);
-                // $totalPrice *= $quantity;
 
-                // dd($totalInWords);
 
-                // Create a new invoice entry for the current product
                 $invoice = new Invoice([
                     'invoice_number' => $validatedData['invoice_number'],
                     'subject' => $validatedData['subject'],
                     'customer_id' => $validatedData['customer_id'],
-                    'product_id' => $product->id, // Associate the current product with the invoice
+                    'product_id' => $product->id,
                     'quantity' => $productQuantity,
-                    'purchase_price' => $purchasePriceTotal,
+                    'per_unit_price' => $sellPrice,
+                    'sell_price' => $sellPriceTotal,
                     'vat' => $totalVat,
                     'tax' => $totalTax,
                     'total_amount' => $totalPrice,
-                    // 'roundedTotal' => $roundedTotalPrice, // to comment later
                     'in_words' => $totalInWords,
                     'warranty' => $warranty
                 ]);
 
-                // dd($invoice);
-
-                // Save the invoice entry
                 $invoice->save();
             }
 
-            // Commit the database transaction
             DB::commit();
 
             return redirect()->route('invoices.index')->with('success', 'Invoice added successfully!');
         } catch (\Exception $e) {
-            // Rollback the database transaction in case of an error
             DB::rollBack();
 
             return back()->withInput()->withErrors(['error' => 'Failed to add invoice. Please try again!' . $e]);
@@ -223,32 +205,78 @@ class InvoiceController extends Controller
 
     public function edit(Invoice $invoice)
     {
-        $vendors = Vendor::all();
+        $customers = Customer::all();
+        $products = Product::all();
 
-        return view('invoices.edit', compact('invoice', 'vendors'));
+        return view('invoices.edit', compact('invoice', 'customers', 'products'));
     }
 
-    public function update(Request $request, Product $product)
+    public function update(Request $request, Invoice $invoice)
     {
-        $validatedInvoice = $request->validate([
+        $validatedData = $request->validate([
             'invoice_number' => 'required|string',
             'subject' => 'required|string',
             'customer_id' => 'required|string',
-            'product_id' => 'required|string',
-            'quantity' => 'required|integer|min:1',
-            'purchase_price' => 'required|numeric|min:0',
-            'vat' => 'required|numeric|min:0',
-            'tax' => 'required|numeric|min:0',
-            'total_amount' => 'required|integer|min:0',
-            'in_words' => 'required|string',
-            'warranty' => 'nullable|integer|min:0',
-            'vendor_invoice_no' => 'required|string'
+            'product_id' => 'required|array',
+            'quantity' => 'required|array'
         ]);
 
 
-        $product->update($validatedInvoice);
+        $productIds = $request->input('product_id');
+        $products = Product::whereIn('id', $productIds)->get();
 
-        return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
+        $quantity = $request->input('quantity');
+        $i = 0;
+
+        try {
+            DB::beginTransaction();
+
+            foreach ($products as $product) {
+                $purchasePrice = $product->purchase_price;
+                $sellPrice = $product->sell_price;
+                $vat = $product->vat;
+                $tax = $product->tax;
+                $warranty = $product->warranty;
+
+                $productQuantity = $quantity[$i];
+                $i++;
+
+                $totalVat = $sellPrice * ($vat / 100) * $productQuantity;
+                $totalTax = $sellPrice * ($tax / 100) * $productQuantity;
+                $sellPriceTotal = $sellPrice * $productQuantity;
+
+                $totalPrice = $sellPriceTotal + $totalVat + $totalTax;
+
+                $roundedTotalPrice = (int) (round($totalPrice));
+
+
+                $totalInWords = $this->convertNumberToEnglishWords($roundedTotalPrice);
+                $invoice = new Invoice([
+                    'invoice_number' => $validatedData['invoice_number'],
+                    'subject' => $validatedData['subject'],
+                    'customer_id' => $validatedData['customer_id'],
+                    'product_id' => $product->id,
+                    'quantity' => $productQuantity,
+                    'per_unit_price' => $sellPrice,
+                    'sell_price' => $sellPriceTotal,
+                    'vat' => $totalVat,
+                    'tax' => $totalTax,
+                    'total_amount' => $totalPrice,
+                    'in_words' => $totalInWords,
+                    'warranty' => $warranty
+                ]);
+
+                $invoice->save();
+            }
+
+            DB::commit();
+
+            return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->withInput()->withErrors(['error' => 'Failed to update invoice. Please try again!' . $e]);
+        }
     }
 
     public function destroy(Invoice $invoice)

@@ -18,7 +18,8 @@ class Invoice extends Model
         'customer_id',
         'product_id',
         'quantity',
-        'purchase_price',
+        'per_unit_price',
+        'sell_price',
         'vat',
         'tax',
         'total_amount',
@@ -27,4 +28,13 @@ class Invoice extends Model
         'warranty'
     ];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }

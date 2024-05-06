@@ -1,61 +1,92 @@
+<style>
+    .button-base {
+        padding: 10px 20px;
+        width: 100%;
+        height: 40px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .edit-button {
+        background-color: #4CAF50;
+        color: white;
+        margin: 8px;
+    }
+</style>
+
 <x-app-layout>
 
     <x-slot name="main">
         <!-- add customer form -->
         <div class="container mx-auto">
-            <h2 class="text-2xl font-semibold mb-4">Update Product</h2>
+            <h2 class="text-2xl font-semibold mb-4">Update Invoice</h2>
             <!-- Customer update form -->
-            <form method="POST" action="{{ route('products.update', $product) }}" class="max-w-md mx-auto">
+            <form method="POST" action="{{ route('invoices.update', $invoice) }}" class="max-w-md mx-auto">
                 @csrf
                 @method('PUT')
                 <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <label for="invoice_number" class="block text-sm font-medium text-gray-700">Invoice Number</label>
                     <input type="text"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="name" name="name" placeholder="Enter name" value="{{$product->name}}">
+                        id="invoice_number" name="invoice_number" placeholder="Enter invoice number"
+                        value="{{$invoice->invoice_number}}" disabled>
                 </div>
+
+                <input type="hidden" name="invoice_number" value="{{$invoice->invoice_number}}">
+                <input type="hidden" name="subject" value="{{$invoice->subject}}">
+
                 <div class="mb-4">
-                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
                     <input type="text"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="description" name="description" placeholder="Enter description"
-                        value="{{$product->description}}">
+                        id="subject" name="subject" placeholder="Enter subject" value="{{$invoice->subject}}" disabled>
                 </div>
-                <div class="mb-4">
-                    <label for="purchase_price" class="block text-sm font-medium text-gray-700">Purchase price</label>
-                    <input type="text"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="purchase_price" name="purchase_price" placeholder="Enter purchase price"
-                        value="{{$product->purchase_price}}">
+
+
+                <input type="hidden" name="customer_id" value="{{$invoice->customer_id}}">
+
+                <div id="productContainer">
+                    <div class="productRow mb-4">
+                        <div class="mb-4">
+                            <label for="product_id" class="block text-sm font-medium text-gray-700">Select Product
+                                Name</label>
+                            <select name="product_id[]"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">Select Product</option>
+                                @foreach($products as $product)
+                                <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="quantity" class="text-sm font-medium text-gray-700">Quantity</label>
+                            <input type="text"
+                                class="mt-1 border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                id="quantity" name="quantity[]" placeholder="Enter quantity">
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="stock" class="block text-sm font-medium text-gray-700">Stock Available</label>
-                    <input type="number"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="stock" name="stock" placeholder="Enter available stock" value="{{$product->stock}}">
-                </div>
-                <div class="mb-4">
-                    <label for="vat" class="block text-sm font-medium text-gray-700">VAT</label>
-                    <input type="text"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="vat" name="vat" placeholder="Enter VAT" value="{{$product->vat}}">
-                </div>
-                <div class="mb-4">
-                    <label for="tax" class="block text-sm font-medium text-gray-700">TAX</label>
-                    <input type="text"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="tax" name="tax" placeholder="Enter TAX" value="{{$product->tax}}">
-                </div>
-                <div class="mb-4">
-                    <label for="warranty" class="block text-sm font-medium text-gray-700">Warranty (Year)</label>
-                    <input type="text"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        id="warranty" name="warranty" placeholder="Enter warranty in year"
-                        value="{{$product->warranty}}">
-                </div>
+
+                <button type="button" id="addProductBtn" class="button-base edit-button">Add more product</button>
+
                 <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Submit</button>
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Submit</button>
             </form>
         </div>
     </x-slot>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addProductBtn = document.getElementById('addProductBtn');
+        const productContainer = document.getElementById('productContainer');
+        const productRow = document.querySelector('.productRow');
+
+        addProductBtn.addEventListener('click', function () {
+            const clonedRow = productRow.cloneNode(true);
+            productContainer.appendChild(clonedRow);
+        });
+    });
+</script>
