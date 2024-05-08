@@ -17,9 +17,14 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function getInvoice()
+    public function getInvoice(Invoice $invoice)
     {
-        return view('invoices.invoice');
+        // $customer = Customer::with($invoice->customer_id)->get();
+        $invoice->load('customer');
+
+        $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+
+        return view('invoices.invoice', compact('invoice', 'allInvoices'));
     }
 
     public function create()
