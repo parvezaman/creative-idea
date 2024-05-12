@@ -109,6 +109,7 @@
                         <th>Vat(%)</th>
                         <th>Tax(%)</th>
                         <th>Total Amount</th>
+                        <th>Payment Status</th>
                         <th>warranty</th>
                         <th>Actions</th>
                     </tr>
@@ -126,10 +127,13 @@
                         <td>{{ $invoice->vat}}</td>
                         <td>{{ $invoice->tax }}</td>
                         <td>{{ $invoice->total_amount }}</td>
+                        <td>{{ $invoice->is_paid ? "Paid" : "Due" }}</td>
                         <td>{{ $invoice->warranty }}</td>
                         <td>
                             <div class="button-container">
                                 <a href="{{ route('invoices.get', $invoice) }}" class="edit-button">Invoice</a>
+                                <a href="{{ route('invoices.edit_payment', $invoice) }}" class="edit-button">Edit
+                                    Pay</a>
                                 <a href="{{ route('invoices.edit', $invoice) }}" class="edit-button">Edit</a>
                                 <form id="delete-form" action="{{ route('invoices.destroy', $invoice) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this invoice?')">

@@ -26,7 +26,11 @@ class Invoice extends Model
         'total_amount',
         // 'roundedTotal',
         'in_words',
-        'warranty'
+        'warranty',
+        'total_in_words',
+        'is_paid',
+        'payment_method',
+        'reference'
     ];
 
     public function product()

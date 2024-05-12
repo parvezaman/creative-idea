@@ -140,15 +140,15 @@
                     Payment Method
                 </td>
                 <td>
-                    Check #
+                    Reference #
                 </td>
             </tr>
             <tr class="details">
                 <td>
-                    Check
+                    {{$invoice->payment_method?$invoice->payment_method:"Due"}}
                 </td>
                 <td>
-                    1000
+                    {{$invoice->reference}}
                 </td>
             </tr>
             <tr class="heading">
@@ -202,7 +202,7 @@
             <tr class="total">
                 <td></td>
                 <td>
-                    In Words: {{$inWordsInIndian}}
+                    In Words: {{$inWordsInIndian}} Taka Only
                 </td>
             </tr>
             {{-- <tr>
@@ -212,20 +212,6 @@
             </tr> --}}
         </table>
     </div>
-
-    <?php
-    print($invoice);
-
-    print("-----------");
-    
-    print($allInvoices);
-    print("-----------");
-    print($GrandTotal);
-    
-    print($GrandTotalInWord);
-    print("-----------");
-    print($inWordsInIndian);
-    ?>
 </body>
 
 </html>

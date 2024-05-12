@@ -33,6 +33,10 @@ class InvoiceController extends Controller
         $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
         $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
 
+        // Update the total_in_words column with the Indian words for the grand total
+        Invoice::where('invoice_number', $invoice->invoice_number)->update(['total_in_words' => $inWordsInIndian]);
+
+
         return view('invoices.invoice', compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian'));
     }
 
@@ -256,6 +260,8 @@ class InvoiceController extends Controller
             'quantity' => 'required|array'
         ]);
 
+        // dd($request);
+
         $productIds = $request->input('product_id');
         $products = Product::whereIn('id', $productIds)->get();
 
@@ -272,6 +278,9 @@ class InvoiceController extends Controller
                 $vat = $product->vat;
                 $tax = $product->tax;
                 $warranty = $product->warranty;
+                $isPaid = $request->is_paid;
+                $payment_method = $request->payment_method;
+                $reference = $request->reference;
 
                 $productQuantity = $quantity[$i];
                 $i++;
@@ -301,8 +310,13 @@ class InvoiceController extends Controller
                     'tax' => $totalTax,
                     'total_amount' => $totalPrice,
                     'in_words' => $totalInWords,
-                    'warranty' => $warranty
+                    'warranty' => $warranty,
+                    'is_paid' => $isPaid,
+                    'payment_method' => $payment_method,
+                    'reference' => $reference
                 ]);
+
+                // dd($invoice);
 
                 $invoice->save();
             }
@@ -324,6 +338,33 @@ class InvoiceController extends Controller
 
         return view('invoices.edit', compact('invoice', 'customers', 'products'));
     }
+    public function edit_payment(Invoice $invoice)
+    {
+        $customers = Customer::all();
+        $products = Product::all();
+
+        return view('invoices.edit_payment', compact('invoice', 'customers', 'products'));
+    }
+
+    public function update_payment(Request $request, Invoice $invoice)
+    {
+        // dd($request);
+        try {
+
+            $invoiceInfo = [
+                'is_paid' => $request->is_paid,
+                'payment_method' => $request->payment_method,
+                'reference' => $request->reference
+            ];
+            Invoice::where('invoice_number', $invoice->invoice_number)->update($invoiceInfo);
+            return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back()->withInput()->withErrors(['error' => 'Failed to update invoice. Please try again!' . $e]);
+        }
+    }
+
 
     public function update(Request $request, Invoice $invoice)
     {
@@ -392,6 +433,7 @@ class InvoiceController extends Controller
             return back()->withInput()->withErrors(['error' => 'Failed to update invoice. Please try again!' . $e]);
         }
     }
+
 
     public function destroy(Invoice $invoice)
     {
