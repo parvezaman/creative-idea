@@ -17,6 +17,7 @@ class Invoice extends Model
         'subject',
         'customer_id',
         'product_id',
+        'product_name',
         'quantity',
         'per_unit_price',
         'sell_price',

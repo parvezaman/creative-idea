@@ -24,7 +24,16 @@ class InvoiceController extends Controller
 
         $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
 
-        return view('invoices.invoice', compact('invoice', 'allInvoices'));
+        $GrandTotal = 0;
+
+        foreach ($allInvoices as $key => $invoice) {
+            $GrandTotal += $invoice->total_amount;
+        }
+
+        $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
+        $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+        return view('invoices.invoice', compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian'));
     }
 
     public function create()
@@ -47,6 +56,105 @@ class InvoiceController extends Controller
 
         return 'Creative-Idea-INV-' . $nextNumber;
     }
+
+    private function convertNumberToIndianWords($number)
+    {
+        $words = array(
+            '0' => '',
+            '1' => 'one',
+            '2' => 'two',
+            '3' => 'three',
+            '4' => 'four',
+            '5' => 'five',
+            '6' => 'six',
+            '7' => 'seven',
+            '8' => 'eight',
+            '9' => 'nine',
+            '10' => 'ten',
+            '11' => 'eleven',
+            '12' => 'twelve',
+            '13' => 'thirteen',
+            '14' => 'fourteen',
+            '15' => 'fifteen',
+            '16' => 'sixteen',
+            '17' => 'seventeen',
+            '18' => 'eighteen',
+            '19' => 'nineteen',
+            '20' => 'twenty',
+            '30' => 'thirty',
+            '40' => 'forty',
+            '50' => 'fifty',
+            '60' => 'sixty',
+            '70' => 'seventy',
+            '80' => 'eighty',
+            '90' => 'ninety'
+        );
+
+        $digits = array('', 'Hundred', 'Thousand', 'Lakh', 'Crore');
+
+        $number = str_replace(',', '', trim($number));
+        $split = explode('.', $number);
+        $number = $split[0];
+        $output = '';
+
+        if ($number == '0') {
+            return 'zero';
+        }
+
+        if (strlen($number) > 9) {
+            return 'overflow';
+        }
+
+        $crores = (int) ($number / 10000000);
+        $number -= $crores * 10000000;
+        $lakhs = (int) ($number / 100000);
+        $number -= $lakhs * 100000;
+        $thousands = (int) ($number / 1000);
+        $number -= $thousands * 1000;
+        $hundreds = (int) ($number / 100);
+        $number -= $hundreds * 100;
+        $tens = (int) ($number / 10);
+        $ones = $number % 10;
+
+        if ($crores) {
+            $output .= $this->convertNumberToIndianWords($crores) . ' Crore ';
+        }
+
+        if ($lakhs) {
+            $output .= $this->convertNumberToIndianWords($lakhs) . ' Lakh ';
+        }
+
+        if ($thousands) {
+            $output .= $this->convertNumberToIndianWords($thousands) . ' Thousand ';
+        }
+
+        if ($hundreds) {
+            $output .= $this->convertNumberToIndianWords($hundreds) . ' Hundred ';
+        }
+
+        if ($tens || $ones) {
+            if ($output) {
+                $output .= 'and ';
+            }
+
+            // Combine tens and ones without leading zeros
+            $tens_ones = $tens * 10 + $ones;
+
+            if ($tens_ones < 20) {
+                $output .= $words["$tens_ones"];
+            } else {
+                $tens_key = $tens * 10;
+                $output .= $words["$tens_key"];
+                if ($ones) {
+                    $output .= '-' . $words["$ones"];
+                }
+            }
+        }
+
+        return ucfirst($output);
+    }
+
+
 
     private function convertNumberToEnglishWords($number)
     {
@@ -185,6 +293,7 @@ class InvoiceController extends Controller
                     'subject' => $validatedData['subject'],
                     'customer_id' => $validatedData['customer_id'],
                     'product_id' => $product->id,
+                    'product_name' => $product->name,
                     'quantity' => $productQuantity,
                     'per_unit_price' => $sellPrice,
                     'sell_price' => $sellPriceTotal,

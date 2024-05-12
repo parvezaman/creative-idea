@@ -159,7 +159,17 @@
                     Price
                 </td>
             </tr>
+            @foreach ($allInvoices as $myInvoice)
             <tr class="item">
+                <td>
+                    {{$myInvoice->product_name}}
+                </td>
+                <td>
+                    {{$myInvoice->total_amount}}
+                </td>
+            </tr>
+            @endforeach
+            {{-- <tr class="item">
                 <td>
                     Website design
                 </td>
@@ -182,13 +192,24 @@
                 <td>
                     $10.00
                 </td>
+            </tr> --}}
+            <tr class="total">
+                <td></td>
+                <td>
+                    Total: &#2547; {{$GrandTotal}}
+                </td>
             </tr>
             <tr class="total">
                 <td></td>
                 <td>
-                    Total: $385.00
+                    In Words: {{$inWordsInIndian}}
                 </td>
             </tr>
+            {{-- <tr>
+                <td>
+                    In Words formatter: {{$inWordsInIndian}}
+                </td>
+            </tr> --}}
         </table>
     </div>
 
@@ -196,8 +217,14 @@
     print($invoice);
 
     print("-----------");
-
+    
     print($allInvoices);
+    print("-----------");
+    print($GrandTotal);
+    
+    print($GrandTotalInWord);
+    print("-----------");
+    print($inWordsInIndian);
     ?>
 </body>
 
