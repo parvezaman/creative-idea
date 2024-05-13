@@ -6,29 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice-Creative-Idea</title>
     <style>
-        .button-base {
-            padding: 10px 20px;
-            width: 100%;
-            height: 40px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .button-base:hover {
-            transform: translateY(2px);
-        }
-
-        .edit-button {
-            background-color: #4CAF50;
-            color: white;
-            margin-right: 8px;
+        html {
+            background-color: #f8f9fa;
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            color: #333;
+            /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
+            color: #000000;
             background-color: #f8f9fa;
             margin: 0;
             padding: 0;
@@ -111,19 +95,17 @@
 <body>
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
-            <tr class="top" style="border-bottom: 1px solid black;">
+            <tr class="top">
                 <td colspan="2">
                     <table>
                         <tr>
                             <td class="title">
-                                {{-- <img src="logo.png" style="width:100%; max-width:300px;">--}}
-                                <img src="{{asset('images/cilogo.png')}}" alt="">
-
+                                <img
+                                    src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}">
                             </td>
                             <td>
                                 Invoice #: {{ $invoice->invoice_number }}<br>
                                 Date:{{$invoice->created_at->format('F j, Y')}} <br>
-                                {{-- Due: February 1, 2024 --}}
                             </td>
                         </tr>
                     </table>
@@ -194,23 +176,17 @@
             <tr class="total">
                 <td></td>
                 <td>
-                    Total: &#2547; {{$GrandTotal}}
+                    Total: {{$GrandTotal}}
                 </td>
             </tr>
             <tr class="total">
                 <td></td>
                 <td>
                     In Words: {{$inWordsInIndian}} Taka Only
-                </td>
+                <td>
             </tr>
         </table>
-        <div>
-            <a class="button-base edit-button" href="{{ route('invoices.generate_invoice', $invoice) }}">
-                Download Invoice
-            </a>
-        </div>
     </div>
-
 
 </body>
 

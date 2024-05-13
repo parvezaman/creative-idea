@@ -8,6 +8,8 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Cache;
 
 class InvoiceController extends Controller
 {
@@ -17,7 +19,7 @@ class InvoiceController extends Controller
         return view('invoices.index', compact('invoices'));
     }
 
-    public function getInvoice(Invoice $invoice)
+    /* public function getInvoice(Invoice $invoice)
     {
         // $customer = Customer::with($invoice->customer_id)->get();
         $invoice->load('customer');
@@ -39,6 +41,125 @@ class InvoiceController extends Controller
 
         return view('invoices.invoice', compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian'));
     }
+ */
+
+
+    public function getInvoice(Invoice $invoice)
+    {
+        // Check if the data is already in the cache
+        $cacheKey = 'invoice_' . $invoice->invoice_number;
+        $cachedData = Cache::get($cacheKey);
+
+        if (!$cachedData) {
+            // Data is not in cache, fetch from database
+            $invoice->load('customer');
+            $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+            $GrandTotal = 0;
+
+            foreach ($allInvoices as $key => $inv) {
+                $GrandTotal += $inv->total_amount;
+            }
+
+            $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
+            $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+            // Put the data into cache
+            $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian');
+            Cache::put($cacheKey, $cachedData, now()->addHours(1)); // Example: Cache for 1 hour
+        }
+
+        // Return the view with the cached data
+        return view('invoices.invoice', $cachedData);
+    }
+
+    public function generateInvoice(Invoice $invoice)
+    {
+        try {
+            $cacheKey = 'invoice_' . $invoice->invoice_number;
+            $cachedData = Cache::get($cacheKey);
+
+            if (!$cachedData) {
+                $invoice->load('customer');
+                $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+                $GrandTotal = 0;
+
+                foreach ($allInvoices as $key => $inv) {
+                    $GrandTotal += $inv->total_amount;
+                }
+
+                $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+                $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'inWordsInIndian');
+                Cache::put($cacheKey, $cachedData, now()->addHours(1)); // Example: Cache for 1 hour
+            }
+
+            $pdf = Pdf::loadView('invoices.pdfInvoice', $cachedData);
+
+            return $pdf->download($invoice->invoice_number . '.pdf');
+
+        } catch (\Exception $e) {
+            \Log::error('PDF generation error: ' . $e->getMessage());
+
+            return back()->withInput()->withErrors(['error' => 'Failed to generate the invoice PDF. Please try again later.']);
+        }
+    }
+
+
+    /*  public function generateInvoice(Invoice $invoice)
+     {
+
+
+         $invoice->load('customer');
+
+         $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+
+         $GrandTotal = 0;
+
+         foreach ($allInvoices as $key => $invoice) {
+             $GrandTotal += $invoice->total_amount;
+         }
+
+         $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
+         $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+         // dd(compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian'));
+         try {
+             //code...
+             $pdf = Pdf::loadView('invoices.pdfInvoice', compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian'));
+             return $pdf->download('invoice.pdf');
+         } catch (\Exception $e) {
+             //throw $th;
+             return back()->withInput()->withErrors(['error' => 'Failed to add invoice. Please try again!' . $e]);
+         }
+     } */
+
+    /*  public function generateInvoice(Invoice $invoice)
+     {
+         try {
+             // Load necessary data
+             $invoice->load('customer');
+             $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+             $GrandTotal = 0;
+             foreach ($allInvoices as $key => $invoice) {
+                 $GrandTotal += $invoice->total_amount;
+             }
+             // $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
+             $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+             // Generate PDF
+             $pdf = Pdf::loadView('invoices.pdfInvoice', compact('invoice', 'allInvoices', 'GrandTotal', 'inWordsInIndian'));
+
+             // Download PDF
+             return $pdf->download('invoice.pdf');
+         } catch (\Exception $e) {
+             // Log the error
+             \Log::error('PDF generation error: ' . $e->getMessage());
+
+             // Display error message to the user
+             return back()->withInput()->withErrors(['error' => 'Failed to generate the invoice PDF. Please try again later.']);
+         }
+     }
+  */
 
     public function create()
     {
@@ -260,7 +381,6 @@ class InvoiceController extends Controller
             'quantity' => 'required|array'
         ]);
 
-        // dd($request);
 
         $productIds = $request->input('product_id');
         $products = Product::whereIn('id', $productIds)->get();
@@ -316,7 +436,6 @@ class InvoiceController extends Controller
                     'reference' => $reference
                 ]);
 
-                // dd($invoice);
 
                 $invoice->save();
             }
@@ -348,7 +467,6 @@ class InvoiceController extends Controller
 
     public function update_payment(Request $request, Invoice $invoice)
     {
-        // dd($request);
         try {
 
             $invoiceInfo = [
