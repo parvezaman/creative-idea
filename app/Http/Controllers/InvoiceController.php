@@ -46,12 +46,26 @@ class InvoiceController extends Controller
 
     public function getInvoice(Invoice $invoice)
     {
-        // Check if the data is already in the cache
-        $cacheKey = 'invoice_' . $invoice->invoice_number;
-        $cachedData = Cache::get($cacheKey);
+        $invoice->load('customer');
+        $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+        $GrandTotal = 0;
 
-        if (!$cachedData) {
-            // Data is not in cache, fetch from database
+        foreach ($allInvoices as $key => $inv) {
+            $GrandTotal += $inv->total_amount;
+        }
+
+        $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
+        $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+        $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian');
+        Invoice::where('invoice_number', $invoice->invoice_number)->update(['total_in_words' => $inWordsInIndian]);
+
+        return view('invoices.invoice', $cachedData);
+    }
+
+    public function generateInvoice(Invoice $invoice)
+    {
+        try {
             $invoice->load('customer');
             $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
             $GrandTotal = 0;
@@ -60,38 +74,9 @@ class InvoiceController extends Controller
                 $GrandTotal += $inv->total_amount;
             }
 
-            $GrandTotalInWord = $this->convertNumberToEnglishWords((int) round($GrandTotal));
             $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
 
-            // Put the data into cache
-            $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'GrandTotalInWord', 'inWordsInIndian');
-            Cache::put($cacheKey, $cachedData, now()->addHours(1)); // Example: Cache for 1 hour
-        }
-
-        // Return the view with the cached data
-        return view('invoices.invoice', $cachedData);
-    }
-
-    public function generateInvoice(Invoice $invoice)
-    {
-        try {
-            $cacheKey = 'invoice_' . $invoice->invoice_number;
-            $cachedData = Cache::get($cacheKey);
-
-            if (!$cachedData) {
-                $invoice->load('customer');
-                $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
-                $GrandTotal = 0;
-
-                foreach ($allInvoices as $key => $inv) {
-                    $GrandTotal += $inv->total_amount;
-                }
-
-                $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
-
-                $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'inWordsInIndian');
-                Cache::put($cacheKey, $cachedData, now()->addHours(1)); // Example: Cache for 1 hour
-            }
+            $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'inWordsInIndian');
 
             $pdf = Pdf::loadView('invoices.pdfInvoice', $cachedData);
 
@@ -376,6 +361,7 @@ class InvoiceController extends Controller
         $validatedData = $request->validate([
             'invoice_number' => 'required|string',
             'subject' => 'required|string',
+            'invoice_date' => 'required|string',
             'customer_id' => 'required|string',
             'product_id' => 'required|array',
             'quantity' => 'required|array'
@@ -420,6 +406,7 @@ class InvoiceController extends Controller
                 $invoice = new Invoice([
                     'invoice_number' => $validatedData['invoice_number'],
                     'subject' => $validatedData['subject'],
+                    'invoice_date' => $validatedData['invoice_date'],
                     'customer_id' => $validatedData['customer_id'],
                     'product_id' => $product->id,
                     'product_name' => $product->name,
@@ -468,12 +455,24 @@ class InvoiceController extends Controller
     public function update_payment(Request $request, Invoice $invoice)
     {
         try {
-
             $invoiceInfo = [
                 'is_paid' => $request->is_paid,
                 'payment_method' => $request->payment_method,
                 'reference' => $request->reference
             ];
+            if ($request->is_paid == 0) {
+                $invoiceInfo = [
+                    'is_paid' => $request->is_paid,
+                    'payment_method' => null,
+                    'reference' => null
+                ];
+            }
+
+            // $invoiceInfo = [
+            //     'is_paid' => $request->is_paid,
+            //     'payment_method' => $request->payment_method,
+            //     'reference' => $request->reference
+            // ];
             Invoice::where('invoice_number', $invoice->invoice_number)->update($invoiceInfo);
             return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
         } catch (\Exception $e) {

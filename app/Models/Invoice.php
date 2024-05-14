@@ -30,7 +30,8 @@ class Invoice extends Model
         'total_in_words',
         'is_paid',
         'payment_method',
-        'reference'
+        'reference',
+        'invoice_date'
     ];
 
     public function product()

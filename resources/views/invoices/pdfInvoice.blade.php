@@ -109,8 +109,7 @@
                             </td>
                             <td style="text-align: right;">
                                 Invoice #: {{ $invoice->invoice_number }}<br>
-                                Date:{{$invoice->created_at->format('F j, Y')}} <br>
-                                {{-- Due: February 1, 2024 --}}
+                                Date: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('F j, Y') }}
                             </td>
                         </tr>
                     </table>

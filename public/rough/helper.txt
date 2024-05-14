@@ -31,6 +31,7 @@ in_words
 created_at
 updated_at
 warranty
+invoice_date
 
 
 vendors table 

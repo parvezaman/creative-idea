@@ -38,6 +38,15 @@
                 <input type="hidden" name="subject" value="{{$invoice->subject}}">
 
                 <div class="mb-4">
+                    <label for="invoice_date" class="block text-sm font-medium text-gray-700">Invoice Creation
+                        Date</label>
+                    <input type="date"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        id="invoice_date" name="invoice_date" placeholder="Enter invoice date"
+                        value="{{$invoice->invoice_date}}" disabled>
+                </div>
+
+                <div class="mb-4">
                     <label for="subject" class="block text-sm font-medium text-gray-700">Subject</label>
                     <input type="text"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

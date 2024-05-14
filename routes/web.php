@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invoices/{invoice}/get', [InvoiceController::class, 'getInvoice'])->name('invoices.get');
     Route::get('/invoices/{invoice}/generate-invoice', [InvoiceController::class, 'generateInvoice'])->name('invoices.generate_invoice');
     Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
-    Route::put('/invoices/{invoice}', [InvoiceController::class, 'update_payment'])->name('invoices.update_payment');
+    Route::put('/invoices/{invoice}/update-payment', [InvoiceController::class, 'update_payment'])->name('invoices.update_payment');
     Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');
 });
 
