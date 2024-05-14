@@ -68,7 +68,7 @@
     }
 
     .button-container button.edit-button {
-        background-color: #2196F3;
+        background-color: #009682;
         color: white;
     }
 
@@ -77,8 +77,12 @@
         color: white;
     }
 
+    .button-container button.delete-button:hover {
+        background-color: #f8675c;
+    }
+
     .button-container button:hover {
-        background-color: #ddd;
+        background-color: #01c9ae;
     }
 
     .overflow-x-auto {
@@ -131,10 +135,20 @@
                         <td>{{ $invoice->warranty }}</td>
                         <td>
                             <div class="button-container">
-                                <a href="{{ route('invoices.get', $invoice) }}" class="edit-button">Invoice</a>
-                                <a href="{{ route('invoices.edit_payment', $invoice) }}" class="edit-button">Edit
-                                    Pay</a>
-                                <a href="{{ route('invoices.edit', $invoice) }}" class="edit-button">Edit</a>
+                                {{-- <a href="{{ route('invoices.get', $invoice) }}" class="edit-button">Invoice</a>
+                                --}}
+                                <form action="{{ route('invoices.get', $invoice) }}" method="GET">
+                                    <button type="submit" class="edit-button">Invoice</button>
+                                </form>
+                                {{-- <a href="{{ route('invoices.edit_payment', $invoice) }}" class="edit-button">Edit
+                                    Pay</a> --}}
+                                <form action="{{ route('invoices.edit_payment', $invoice) }}" method="GET">
+                                    <button type="submit" class="edit-button">EditPay</button>
+                                </form>
+                                {{-- <a href="{{ route('invoices.edit', $invoice) }}" class="edit-button">Edit</a> --}}
+                                <form action="{{ route('invoices.edit', $invoice) }}" method="GET">
+                                    <button type="submit" class="edit-button">Edit</button>
+                                </form>
                                 <form id="delete-form" action="{{ route('invoices.destroy', $invoice) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this invoice?')">
                                     @csrf

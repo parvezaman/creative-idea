@@ -67,7 +67,7 @@
     }
 
     .button-container button.edit-button {
-        background-color: #2196F3;
+        background-color: #009682;
         color: white;
     }
 
@@ -76,8 +76,12 @@
         color: white;
     }
 
+    .button-container button.delete-button:hover {
+        background-color: #f8675c;
+    }
+
     .button-container button:hover {
-        background-color: #ddd;
+        background-color: #01c9ae;
     }
 
     .overflow-x-auto {
@@ -116,7 +120,11 @@
                         <td>{{ $vendor-> phone}}</td>
                         <td>
                             <div class="button-container">
-                                <a href="{{ route('vendors.edit', $vendor) }}" class="edit-button">Edit</a>
+                                {{-- <a href="{{ route('vendors.edit', $vendor) }}" class="edit-button">Edit</a> --}}
+                                <form action="{{ route('vendors.edit', $vendor) }}" method="GET">
+                                    <button type="submit" class="edit-button">Edit</button>
+                                </form>
+
                                 <form id="delete-form" action="{{ route('vendors.destroy', $vendor) }}" method="POST"
                                     onsubmit="return confirm('Are you sure you want to delete this vendor?')">
                                     @csrf

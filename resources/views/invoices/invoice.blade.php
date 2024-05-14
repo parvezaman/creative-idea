@@ -205,9 +205,12 @@
             </tr>
         </table>
         <div>
-            <a class="button-base edit-button" href="{{ route('invoices.generate_invoice', $invoice) }}">
+            {{-- <a class="button-base edit-button" href="{{ route('invoices.generate_invoice', $invoice) }}">
                 Download Invoice
-            </a>
+            </a> --}}
+            <form action="{{ route('invoices.generate_invoice', $invoice) }}" method="GET">
+                <button type="submit" class="button-base edit-button">Download Invoice</button>
+            </form>
         </div>
     </div>
 
