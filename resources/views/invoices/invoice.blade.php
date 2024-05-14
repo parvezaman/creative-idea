@@ -8,26 +8,23 @@
     <style>
         .button-base {
             padding: 10px 20px;
-            width: 100%;
+            /* width: 100%; */
             height: 40px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            background-color: #4CAF50;
+            color: white;
+            margin-right: 8px;
         }
 
         .button-base:hover {
             transform: translateY(2px);
         }
 
-        .edit-button {
-            background-color: #4CAF50;
-            color: white;
-            margin-right: 8px;
-        }
-
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
             color: #333;
             background-color: #f8f9fa;
             margin: 0;
@@ -47,6 +44,7 @@
 
         .invoice-box table {
             width: 100%;
+            box-sizing: border-box;
             line-height: inherit;
             text-align: left;
         }
@@ -56,7 +54,7 @@
             vertical-align: top;
         }
 
-        .invoice-box table tr td:nth-child(2) {
+        .invoice-box table tr td:nth-child(4) {
             text-align: right;
         }
 
@@ -112,15 +110,13 @@
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
             <tr class="top" style="border-bottom: 1px solid black;">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td class="title">
-                                {{-- <img src="logo.png" style="width:100%; max-width:300px;">--}}
                                 <img src="{{asset('images/cilogo.png')}}" alt="">
-
                             </td>
-                            <td>
+                            <td style="text-align: right;">
                                 Invoice #: {{ $invoice->invoice_number }}<br>
                                 Date:{{$invoice->created_at->format('F j, Y')}} <br>
                                 {{-- Due: February 1, 2024 --}}
@@ -131,7 +127,7 @@
                 </td>
             </tr>
             <tr class="information">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td>
@@ -140,7 +136,7 @@
                                 Eleplant Road, Dhaka<br>
                                 Cell: +880 1711 980 326
                             </td>
-                            <td>
+                            <td style="text-align: right;">
                                 To, <br>
                                 {{$invoice->customer->name ?
                                 $invoice->customer->name:$invoice->customer->company_name}}<br>
@@ -159,6 +155,8 @@
                 <td>
                     Payment Method
                 </td>
+                <td></td>
+                <td></td>
                 <td>
                     Reference #
                 </td>
@@ -167,6 +165,8 @@
                 <td>
                     {{$invoice->payment_method?$invoice->payment_method:"Due"}}
                 </td>
+                <td></td>
+                <td></td>
                 <td>
                     {{$invoice->reference}}
                 </td>
@@ -176,14 +176,27 @@
                     Item
                 </td>
                 <td>
-                    Price
+                    Quantity
+                </td>
+                <td>
+                    Unit Price
+                </td>
+                <td>
+                    Total Price
                 </td>
             </tr>
 
             @foreach ($allInvoices as $myInvoice)
             <tr class="item">
-                <td>
+                <td style="width: 30%;">
                     {{$myInvoice->product_name}}
+                </td>
+                <td style="width: 20%;">
+                    {{$myInvoice->quantity}}
+                </td>
+                <td style="width: 20%;">
+                    {{$myInvoice->per_unit_price + ($myInvoice->vat/$myInvoice->quantity) +
+                    ($myInvoice->tax/$myInvoice->quantity)}}
                 </td>
                 <td>
                     {{$myInvoice->total_amount}}
@@ -193,28 +206,23 @@
 
             <tr class="total">
                 <td></td>
-                <td>
+                <td colspan="3" style="text-align: right;">
                     Total: &#2547; {{$GrandTotal}}
                 </td>
             </tr>
             <tr class="total">
                 <td></td>
-                <td>
-                    In Words: {{$inWordsInIndian}} Taka Only
+                <td colspan="3" style="text-align: right;">
+                    In Words: {{ucwords($inWordsInIndian)}} Taka Only
                 </td>
             </tr>
         </table>
-        <div>
-            {{-- <a class="button-base edit-button" href="{{ route('invoices.generate_invoice', $invoice) }}">
-                Download Invoice
-            </a> --}}
-            <form action="{{ route('invoices.generate_invoice', $invoice) }}" method="GET">
-                <button type="submit" class="button-base edit-button">Download Invoice</button>
-            </form>
-        </div>
     </div>
-
-
+    <div>
+        <form action="{{ route('invoices.generate_invoice', $invoice) }}" method="GET">
+            <button type="submit" class="button-base">Download Invoice</button>
+        </form>
+    </div>
 </body>
 
 </html>

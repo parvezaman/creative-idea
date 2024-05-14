@@ -6,14 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice-Creative-Idea</title>
     <style>
-        html {
-            background-color: #f8f9fa;
-        }
-
         body {
             /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
-            color: #000000;
-            background-color: #f8f9fa;
+            color: #333;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
         }
@@ -31,6 +27,7 @@
 
         .invoice-box table {
             width: 100%;
+            box-sizing: border-box;
             line-height: inherit;
             text-align: left;
         }
@@ -40,7 +37,7 @@
             vertical-align: top;
         }
 
-        .invoice-box table tr td:nth-child(2) {
+        .invoice-box table tr td:nth-child(4) {
             text-align: right;
         }
 
@@ -76,6 +73,13 @@
             border-bottom: none;
         }
 
+        .invoice-box table tr.total td {
+            white-space: nowrap;
+            /* Add this line to prevent text wrapping */
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
         .invoice-box table tr.total td:nth-child(2) {
             border-top: 2px solid #eee;
             font-weight: bold;
@@ -96,16 +100,17 @@
     <div class="invoice-box">
         <table cellpadding="0" cellspacing="0">
             <tr class="top">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td class="title">
                                 <img
                                     src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}">
                             </td>
-                            <td>
+                            <td style="text-align: right;">
                                 Invoice #: {{ $invoice->invoice_number }}<br>
                                 Date:{{$invoice->created_at->format('F j, Y')}} <br>
+                                {{-- Due: February 1, 2024 --}}
                             </td>
                         </tr>
                     </table>
@@ -113,7 +118,7 @@
                 </td>
             </tr>
             <tr class="information">
-                <td colspan="2">
+                <td colspan="4">
                     <table>
                         <tr>
                             <td>
@@ -122,7 +127,7 @@
                                 Eleplant Road, Dhaka<br>
                                 Cell: +880 1711 980 326
                             </td>
-                            <td>
+                            <td style="text-align: right;">
                                 To, <br>
                                 {{$invoice->customer->name ?
                                 $invoice->customer->name:$invoice->customer->company_name}}<br>
@@ -141,6 +146,8 @@
                 <td>
                     Payment Method
                 </td>
+                <td></td>
+                <td></td>
                 <td>
                     Reference #
                 </td>
@@ -149,6 +156,8 @@
                 <td>
                     {{$invoice->payment_method?$invoice->payment_method:"Due"}}
                 </td>
+                <td></td>
+                <td></td>
                 <td>
                     {{$invoice->reference}}
                 </td>
@@ -158,14 +167,27 @@
                     Item
                 </td>
                 <td>
-                    Price
+                    Quantity
+                </td>
+                <td>
+                    Unit Price
+                </td>
+                <td>
+                    Total Price
                 </td>
             </tr>
 
             @foreach ($allInvoices as $myInvoice)
             <tr class="item">
-                <td>
+                <td style="width: 30%;">
                     {{$myInvoice->product_name}}
+                </td>
+                <td style="width: 20%;">
+                    {{$myInvoice->quantity}}
+                </td>
+                <td style="width: 20%;">
+                    {{$myInvoice->per_unit_price + ($myInvoice->vat/$myInvoice->quantity) +
+                    ($myInvoice->tax/$myInvoice->quantity)}}
                 </td>
                 <td>
                     {{$myInvoice->total_amount}}
@@ -175,19 +197,18 @@
 
             <tr class="total">
                 <td></td>
-                <td>
+                <td colspan="3" style="text-align: right;">
                     Total: {{$GrandTotal}}
                 </td>
             </tr>
             <tr class="total">
                 <td></td>
-                <td>
-                    In Words: {{$inWordsInIndian}} Taka Only
-                <td>
+                <td colspan="3" style="text-align: right;">
+                    In Words: {{ucwords($inWordsInIndian)}} Taka Only
+                </td>
             </tr>
         </table>
     </div>
-
 </body>
 
 </html>
