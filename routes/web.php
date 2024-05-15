@@ -62,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/invoices/{invoice}/edit-payment', [InvoiceController::class, 'edit_payment'])->name('invoices.edit_payment');
     Route::get('/invoices/{invoice}/get', [InvoiceController::class, 'getInvoice'])->name('invoices.get');
     Route::get('/invoices/{invoice}/generate-invoice', [InvoiceController::class, 'generateInvoice'])->name('invoices.generate_invoice');
+    Route::get('/invoices/{invoice}/generate-echallan', [InvoiceController::class, 'generateEchallan'])->name('invoices.generate_echallan');
     Route::put('/invoices/{invoice}', [InvoiceController::class, 'update'])->name('invoices.update');
     Route::put('/invoices/{invoice}/update-payment', [InvoiceController::class, 'update_payment'])->name('invoices.update_payment');
     Route::delete('/invoices/{invoice}', [InvoiceController::class, 'destroy'])->name('invoices.destroy');

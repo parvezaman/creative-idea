@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice-Creative-Idea</title>
     <style>
+        .button-container {
+            display: flex
+        }
+
         .button-base {
             padding: 10px 20px;
             /* width: 100%; */
@@ -131,12 +135,10 @@
                     <table>
                         <tr>
                             <td>
-                                From, <br>
+                                {{-- From, <br>
                                 Level: #3, Shop: #313, Multiplan Computer City Centre, <br>
                                 Eleplant Road, Dhaka<br>
-                                Cell: +880 1711 980 326
-                            </td>
-                            <td style="text-align: right;">
+                                Cell: +880 1711 980 326 --}}
                                 To, <br>
                                 {{$invoice->customer->name ?
                                 $invoice->customer->name:$invoice->customer->company_name}}<br>
@@ -145,6 +147,16 @@
                                 {{$invoice->customer->phone ? $invoice->customer->phone . "," :
                                 $invoice->customer->mobile . ","}}
                                 {{$invoice->customer->email ? $invoice->customer->email : ""}}
+                            </td>
+                            <td style="text-align: right;">
+                                {{-- To, <br>
+                                {{$invoice->customer->name ?
+                                $invoice->customer->name:$invoice->customer->company_name}}<br>
+                                {{$invoice->customer->company_address ? $invoice->customer->company_address :
+                                $invoice->customer->address}} <br>
+                                {{$invoice->customer->phone ? $invoice->customer->phone . "," :
+                                $invoice->customer->mobile . ","}}
+                                {{$invoice->customer->email ? $invoice->customer->email : ""}} --}}
 
                             </td>
                         </tr>
@@ -218,9 +230,12 @@
             </tr>
         </table>
     </div>
-    <div>
+    <div class="button-container">
         <form action="{{ route('invoices.generate_invoice', $invoice) }}" method="GET">
             <button type="submit" class="button-base">Download Invoice</button>
+        </form>
+        <form action="{{ route('invoices.generate_echallan', $invoice) }}" method="GET">
+            <button type="submit" class="button-base">Download E-Challan</button>
         </form>
     </div>
 </body>

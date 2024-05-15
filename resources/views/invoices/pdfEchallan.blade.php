@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice-Creative-Idea</title>
+    <title>E.Challan-Creative-Idea</title>
     <style>
         body {
             /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
@@ -94,6 +94,16 @@
             border-bottom: 1px solid #333;
         }
 
+        .signature {
+            position: fixed;
+            /* bottom: 20px; */
+            /* left: 0; */
+            /* right: 0; */
+            text-align: left;
+            font-size: 12px;
+            line-height: .5;
+        }
+
         footer.footer {
             position: fixed;
             bottom: 0;
@@ -117,7 +127,7 @@
                                     src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}">
                             </td>
                             <td style="text-align: right;">
-                                Invoice #: {{ $invoice->invoice_number }}<br>
+                                E-Challan#: {{ $invoice->invoice_number }}<br>
                                 Date: {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('F j, Y') }}
                             </td>
                         </tr>
@@ -130,22 +140,12 @@
                     <table>
                         <tr>
                             <td>
-                                {{-- From, <br>
-                                Level: #3, Shop: #313, Multiplan Computer City Centre, <br>
-                                Eleplant Road, Dhaka<br>
-                                Cell: +880 1711 980 326 --}}
                                 To, <br>
-                                {{$invoice->customer->name ?
-                                $invoice->customer->name:$invoice->customer->company_name}}<br>
-                                {{$invoice->customer->company_address ? $invoice->customer->company_address :
-                                $invoice->customer->address}} <br>
-                                {{$invoice->customer->phone ? $invoice->customer->phone . "," :
+                                Contact Name: {{$invoice->customer->name }}<br>
+                                Phone: {{$invoice->customer->phone ? $invoice->customer->phone . "," :
                                 $invoice->customer->mobile . ","}}
-                                {{$invoice->customer->email ? $invoice->customer->email : ""}}
                             </td>
-                            <td>
-
-
+                            <td style="text-align: right;">
                             </td>
                         </tr>
                     </table>
@@ -153,74 +153,50 @@
             </tr>
             <tr class="heading">
                 <td>
-                    Payment Method
+                    Sl.
                 </td>
-                <td></td>
-                <td></td>
-                <td>
-                    Reference #
-                </td>
-            </tr>
-            <tr class="details">
-                <td>
-                    {{$invoice->payment_method?$invoice->payment_method:"Due"}}
-                </td>
-                <td></td>
-                <td></td>
-                <td>
-                    {{$invoice->reference}}
-                </td>
-            </tr>
-            <tr class="heading">
                 <td>
                     Item
                 </td>
-                <td>
+                <td style="text-align:center;">
                     Quantity
                 </td>
-                <td>
-                    Unit Price
-                </td>
-                <td>
-                    Total Price
+                <td style="text-align:center;">
+                    Warranty
                 </td>
             </tr>
 
             @foreach ($allInvoices as $myInvoice)
             <tr class="item">
-                <td style="width: 30%;">
+                <td style="width: 10%;">
+                    {{$loop->iteration}}
+                </td>
+                <td style="width: 40%;">
                     {{$myInvoice->product_name}}
                 </td>
-                <td style="width: 20%;">
+                <td style="width: 25%; text-align:center;">
                     {{$myInvoice->quantity}}
                 </td>
-                <td style="width: 20%;">
-                    {{$myInvoice->per_unit_price + ($myInvoice->vat/$myInvoice->quantity) +
-                    ($myInvoice->tax/$myInvoice->quantity)}}
-                </td>
-                <td>
-                    {{$myInvoice->total_amount}}
+                <td style="width: 25%; text-align:center;">
+                    {{$myInvoice->warranty}}
                 </td>
             </tr>
             @endforeach
-
-            <tr class="total">
-                <td></td>
-                <td colspan="3" style="text-align: right;">
-                    Total: {{$GrandTotal}}
-                </td>
-            </tr>
-            <tr class="total">
-                <td></td>
-                <td colspan="3" style="text-align: right;">
-                    In Words: {{ucwords($inWordsInIndian)}} Taka Only
-                </td>
-            </tr>
+            <br><br>
+            <div class="signature">
+                <p>With Best Regards,</p>
+                <h3>Md. Anicil Garebin Gofran</h3>
+                <small>Senior Sales Director</small>
+                <p>Creative Idea</p>
+            </div>
+            </td>
         </table>
+
 
         <footer class="footer">
             Level: #3, Shop: #313, Multiplan Computer City Centre, Eleplant Road, Dhaka, Cell: +880 1711 980 326
         </footer>
+
     </div>
 </body>
 

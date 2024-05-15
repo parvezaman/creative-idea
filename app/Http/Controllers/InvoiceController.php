@@ -80,7 +80,32 @@ class InvoiceController extends Controller
 
             $pdf = Pdf::loadView('invoices.pdfInvoice', $cachedData);
 
-            return $pdf->download($invoice->invoice_number . '.pdf');
+            return $pdf->download('Invoice-' . $invoice->invoice_number . '.pdf');
+
+        } catch (\Exception $e) {
+            \Log::error('PDF generation error: ' . $e->getMessage());
+
+            return back()->withInput()->withErrors(['error' => 'Failed to generate the invoice PDF. Please try again later.']);
+        }
+    }
+    public function generateEchallan(Invoice $invoice)
+    {
+        try {
+            $invoice->load('customer');
+            $allInvoices = Invoice::where('invoice_number', $invoice->invoice_number)->get();
+            $GrandTotal = 0;
+
+            foreach ($allInvoices as $key => $inv) {
+                $GrandTotal += $inv->total_amount;
+            }
+
+            $inWordsInIndian = $this->convertNumberToIndianWords((int) round($GrandTotal));
+
+            $cachedData = compact('invoice', 'allInvoices', 'GrandTotal', 'inWordsInIndian');
+
+            $pdf = Pdf::loadView('invoices.pdfEchallan', $cachedData);
+
+            return $pdf->download('eChallan-' . $invoice->invoice_number . '.pdf');
 
         } catch (\Exception $e) {
             \Log::error('PDF generation error: ' . $e->getMessage());
