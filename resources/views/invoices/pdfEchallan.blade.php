@@ -138,6 +138,9 @@
             <tr class="information">
                 <td colspan="4">
                     <table>
+                        <tr style="text-align: center;">
+                            <h4>E-Challan</h4>
+                        </tr>
                         <tr>
                             <td>
                                 To, <br>
