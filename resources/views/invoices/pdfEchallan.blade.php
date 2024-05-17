@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E.Challan-Creative-Idea</title>
+    <title>e-Challan - {{ $invoice->invoice_number }}</title>
     <style>
         body {
             color: #333;

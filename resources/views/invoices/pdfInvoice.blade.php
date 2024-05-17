@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice-Creative-Idea</title>
+    <title>Invoice - {{ $invoice->invoice_number }}</title>
     <style>
         body {
             /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
