@@ -26,6 +26,20 @@
             <form method="POST" action="{{ route('invoices.update_payment', $invoice) }}" class="max-w-md mx-auto">
                 @csrf
                 @method('PUT')
+
+                @if($errors->any())
+                <div class="mb-4">
+                    <div class="text-red-600">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                @endif
+
+
                 <div class="mb-4">
                     <label for="invoice_number" class="block text-sm font-medium text-gray-700">Invoice Number</label>
                     <input type="text"

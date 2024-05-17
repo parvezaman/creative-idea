@@ -513,6 +513,7 @@ class InvoiceController extends Controller
         $validatedData = $request->validate([
             'invoice_number' => 'required|string',
             'subject' => 'required|string',
+            'invoice_date' => 'required|string',
             'customer_id' => 'required|string',
             'product_id' => 'required|array',
             'quantity' => 'required|array'
@@ -551,8 +552,10 @@ class InvoiceController extends Controller
                 $invoice = new Invoice([
                     'invoice_number' => $validatedData['invoice_number'],
                     'subject' => $validatedData['subject'],
+                    'invoice_date' => $validatedData['invoice_date'],
                     'customer_id' => $validatedData['customer_id'],
                     'product_id' => $product->id,
+                    'product_name' => $product->name,
                     'quantity' => $productQuantity,
                     'per_unit_price' => $sellPrice,
                     'sell_price' => $sellPriceTotal,

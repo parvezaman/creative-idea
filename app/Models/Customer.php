@@ -11,15 +11,18 @@ class Customer extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'name',
-        'email',
+        'contact_person_name',
+        'contact_person_email',
         'date_of_birth',
-        'customer_address',
+        'contact_person_address',
         'company_name',
         'company_address',
-        'mobile',
-        'phone',
-        'website',
+        'contact_person_mobile',
+        'contact_person_phone',
+        'contact_person_website',
+        'company_phone',
+        'company_website',
+        'company_email'
     ];
 
     public function invoices()

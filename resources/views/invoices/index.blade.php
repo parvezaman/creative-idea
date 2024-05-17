@@ -124,7 +124,7 @@
                         <td>{{ $invoice->id }}</td>
                         <td>{{ $invoice->invoice_number }}</td>
                         {{-- <td>{{ $invoice->subject }}</td> --}}
-                        <td>{{ $invoice->customer->name }}</td>
+                        <td>{{ $invoice->customer->company_name }}</td>
                         <td>{{ $invoice->product->name }}</td>
                         <td>{{ $invoice->quantity }}</td>
                         <td>{{ $invoice->per_unit_price }}</td>

@@ -38,6 +38,20 @@
             <!-- Invoice creation form -->
             <form id="invoiceForm" method="POST" action="{{ route('invoices.store') }}" class="max-w-md mx-auto">
                 @csrf
+
+                @if($errors->any())
+                <div class="mb-4">
+                    <div class="text-red-600">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                @endif
+
+
                 <div class="mb-4">
                     <label for="invoice_number" class="block text-sm font-medium text-gray-700">Invoice Number</label>
                     <input type="text"
@@ -71,7 +85,7 @@
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         <option value="">Select Customer</option>
                         @foreach($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                        <option value="{{ $customer->id }}">{{ $customer->company_name }}</option>
                         @endforeach
                     </select>
                 </div>

@@ -103,14 +103,14 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Name</th>
+                        <th>Contact Person</th>
                         <th>Email</th>
                         {{-- <th>Date of Birth</th> --}}
-                        <th>Customer Address</th>
+                        <th>Contact Person Address</th>
                         <th>Company Name</th>
                         <th>Company Address</th>
-                        <th>Mobile</th>
-                        <th>Phone</th>
+                        <th>Contact Person Phone</th>
+                        <th>Company Phone</th>
                         <th>Website</th>
                         <th>Actions</th>
                     </tr>
@@ -119,15 +119,15 @@
                     @foreach($customers as $customer)
                     <tr>
                         <td>{{ $customer->id }}</td>
-                        <td>{{ $customer->name }}</td>
-                        <td>{{ $customer->email }}</td>
+                        <td>{{ $customer->contact_person_name }}</td>
+                        <td>{{ $customer->contact_person_email }}</td>
                         {{-- <td>{{ $customer->date_of_birth }}</td> --}}
-                        <td>{{ $customer->customer_address }}</td>
+                        <td>{{ $customer->contact_person_address }}</td>
                         <td>{{ $customer->company_name }}</td>
                         <td>{{ $customer->company_address }}</td>
-                        <td>{{ $customer->mobile }}</td>
-                        <td>{{ $customer->phone }}</td>
-                        <td>{{ $customer->website }}</td>
+                        <td>{{ $customer->contact_person_phone }}</td>
+                        <td>{{ $customer->company_phone }}</td>
+                        <td>{{ $customer->company_website }}</td>
                         <td>
                             <div class="button-container">
                                 {{-- <a href="{{ route('customers.edit', $customer) }}" class="edit-button">Edit</a>

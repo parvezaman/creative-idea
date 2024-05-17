@@ -26,15 +26,18 @@ class CustomerController extends Controller
 
         // Validate the incoming request data
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:customers|max:255',
+            'contact_person_name' => 'required|string|max:255',
+            'company_name' => 'required|string|max:255',
+            'contact_person_email' => 'required|email|unique:customers,contact_person_email|max:255',
+            'company_email' => 'required|email|unique:customers,company_email|max:255',
             'date_of_birth' => 'nullable|date',
-            'customer_address' => 'nullable|string|max:255',
-            'company_name' => 'nullable|string|max:255',
+            'contact_person_address' => 'nullable|string|max:255',
             'company_address' => 'nullable|string|max:255',
             'mobile' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'website' => 'nullable|string|max:255'
+            'contact_person_phone' => 'nullable|string|max:255',
+            'company_phone' => 'nullable|string|max:255',
+            'contact_person_website' => 'nullable|string|max:255',
+            'company_website' => 'nullable|string|max:255'
         ]);
 
 
@@ -56,23 +59,34 @@ class CustomerController extends Controller
     public function update(Request $request, Customer $customer)
     {
         // Validate the incoming request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'date_of_birth' => 'nullable|date',
-            'customer_address' => 'nullable|string|max:255',
-            'company_name' => 'nullable|string|max:255',
-            'company_address' => 'nullable|string|max:255',
-            'mobile' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'website' => 'nullable|string|max:255'
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'contact_person_name' => 'required|string|max:255',
+                'company_name' => 'required|string|max:255',
+                'contact_person_email' => 'required|email|unique:customers,contact_person_email|max:255',
+                'company_email' => 'required|email|unique:customers,company_email|max:255',
+                'date_of_birth' => 'nullable|date',
+                'contact_person_address' => 'nullable|string|max:255',
+                'company_address' => 'nullable|string|max:255',
+                'mobile' => 'nullable|string|max:255',
+                'contact_person_phone' => 'nullable|string|max:255',
+                'company_phone' => 'nullable|string|max:255',
+                'contact_person_website' => 'nullable|string|max:255',
+                'company_website' => 'nullable|string|max:255'
+            ]);
 
-        // Update the customer record in the database
-        $customer->update($validatedData);
+            // Update the customer record in the database
+            // dd($validatedData);      
+            $customer->update($validatedData);
 
-        // Redirect back to the customer index page with a success message
-        return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
+
+            // Redirect back to the customer index page with a success message
+            return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Redirect back with errors
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        }
+
     }
 
     public function destroy(Customer $customer)

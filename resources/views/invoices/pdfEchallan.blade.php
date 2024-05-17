@@ -7,7 +7,6 @@
     <title>E.Challan-Creative-Idea</title>
     <style>
         body {
-            /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
             color: #333;
             background-color: #ffffff;
             margin: 0;
@@ -18,7 +17,6 @@
             max-width: 800px;
             margin: auto;
             padding: 30px;
-            /* border: 1px solid #eee; */
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
             font-size: 16px;
             line-height: 24px;
@@ -27,9 +25,9 @@
 
         .invoice-box table {
             width: 100%;
-            box-sizing: border-box;
             line-height: inherit;
             text-align: left;
+            border-spacing: 0;
         }
 
         .invoice-box table td {
@@ -52,7 +50,20 @@
         }
 
         .invoice-box table tr.information table td {
-            padding-bottom: 40px;
+            padding-bottom: 0;
+        }
+
+        .invoice-box table tr.information table {
+            border-collapse: collapse;
+        }
+
+        .invoice-box table tr.information table td {
+            padding: 0;
+            margin: 0;
+        }
+
+        .invoice-box table tr.information {
+            line-height: 0;
         }
 
         .invoice-box table tr.heading td {
@@ -75,12 +86,6 @@
 
         .invoice-box table tr.total td {
             white-space: nowrap;
-            /* Add this line to prevent text wrapping */
-            border-top: 2px solid #eee;
-            font-weight: bold;
-        }
-
-        .invoice-box table tr.total td:nth-child(2) {
             border-top: 2px solid #eee;
             font-weight: bold;
         }
@@ -95,10 +100,7 @@
         }
 
         .signature {
-            position: fixed;
-            /* bottom: 20px; */
-            /* left: 0; */
-            /* right: 0; */
+            margin-top: 20px;
             text-align: left;
             font-size: 12px;
             line-height: .5;
@@ -111,6 +113,9 @@
             right: 0;
             text-align: center;
             font-size: 12px;
+            padding: 10px;
+            background: #f9f9f9;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -123,8 +128,8 @@
                     <table>
                         <tr>
                             <td class="title">
-                                <img
-                                    src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}">
+                                <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}"
+                                    alt="Company Logo">
                             </td>
                             <td style="text-align: right;">
                                 E-Challan#: {{ $invoice->invoice_number }}<br>
@@ -138,17 +143,36 @@
             <tr class="information">
                 <td colspan="4">
                     <table>
-                        <tr style="text-align: center;">
-                            <h4>E-Challan</h4>
+                        <tr>
+                            <td colspan="2" style="text-align: center;">
+                                <h4>E-Challan</h4>
+                            </td>
                         </tr>
                         <tr>
                             <td>
-                                To, <br>
-                                Contact Name: {{$invoice->customer->name }}<br>
-                                Phone: {{$invoice->customer->phone ? $invoice->customer->phone . "," :
-                                $invoice->customer->mobile . ","}}
+                                <h4>Customer Info,</h4>
+                                <p>{{$invoice->customer->company_name ?
+                                    $invoice->customer->company_name:$invoice->customer->contact_person_name}}</p>
+                                <p> {{$invoice->customer->company_address ? $invoice->customer->company_address :
+                                    $invoice->customer->contact_person_address}} </p>
+                                <p> {{$invoice->customer->company_phone ? $invoice->customer->company_phone :
+                                    $invoice->customer->contact_person_phone }} {{","}}
+                                    {{$invoice->customer->company_email ? $invoice->customer->company_email :
+                                    $invoice->customer->contact_person_email}}</p>
                             </td>
-                            <td style="text-align: right;">
+                            <td>
+                                <h4>Contact Person,</h4>
+                                <p>{{$invoice->customer->contact_person_name ?
+                                    $invoice->customer->contact_person_name:$invoice->customer->company_name}}</p>
+                                <p> {{$invoice->customer->contact_person_address ?
+                                    $invoice->customer->contact_person_address :
+                                    $invoice->customer->company_address}} </p>
+                                <p> {{$invoice->customer->contact_person_phone ?
+                                    $invoice->customer->contact_person_phone :
+                                    $invoice->customer->company_phone }} {{","}}
+                                    {{$invoice->customer->contact_person_email ?
+                                    $invoice->customer->contact_person_email :
+                                    $invoice->customer->company_email}}</p>
                             </td>
                         </tr>
                     </table>
@@ -168,38 +192,35 @@
                     Warranty
                 </td>
             </tr>
-
             @foreach ($allInvoices as $myInvoice)
-            <tr class="item">
+            <tr class="item {{ $loop->last ? 'last' : '' }}">
                 <td style="width: 10%;">
-                    {{$loop->iteration}}
+                    {{ $loop->iteration }}
                 </td>
                 <td style="width: 40%;">
-                    {{$myInvoice->product_name}}
+                    {{ $myInvoice->product_name }}
                 </td>
                 <td style="width: 25%; text-align:center;">
-                    {{$myInvoice->quantity}}
+                    {{ $myInvoice->quantity }}
                 </td>
                 <td style="width: 25%; text-align:center;">
-                    {{$myInvoice->warranty}}
+                    {{ $myInvoice->warranty }}
                 </td>
             </tr>
             @endforeach
-            <br><br>
-            <div class="signature">
-                <p>With Best Regards,</p>
-                <h3>Md. Anicil Garebin Gofran</h3>
-                <small>Senior Sales Director</small>
-                <p>Creative Idea</p>
-            </div>
-            </td>
         </table>
-
-
+        <br>
+        <br>
+        <br>
+        <div class="signature">
+            <p>With Best Regards,</p>
+            <h3>Md. Anicil Garebin Gofran</h3>
+            <small>Senior Sales Director</small>
+            <p>Creative Idea</p>
+        </div>
         <footer class="footer">
-            Level: #3, Shop: #313, Multiplan Computer City Centre, Eleplant Road, Dhaka, Cell: +880 1711 980 326
+            Level: #3, Shop: #313, Multiplan Computer City Centre, Elephant Road, Dhaka, Cell: +880 1711 980 326
         </footer>
-
     </div>
 </body>
 

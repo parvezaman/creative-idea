@@ -135,13 +135,14 @@
                                 Eleplant Road, Dhaka<br>
                                 Cell: +880 1711 980 326 --}}
                                 To, <br>
-                                {{$invoice->customer->name ?
-                                $invoice->customer->name:$invoice->customer->company_name}}<br>
+                                {{$invoice->customer->company_name ?
+                                $invoice->customer->company_name:$invoice->customer->contact_person_name}}<br>
                                 {{$invoice->customer->company_address ? $invoice->customer->company_address :
-                                $invoice->customer->address}} <br>
-                                {{$invoice->customer->phone ? $invoice->customer->phone . "," :
-                                $invoice->customer->mobile . ","}}
-                                {{$invoice->customer->email ? $invoice->customer->email : ""}}
+                                $invoice->customer->contact_person_address}} <br>
+                                {{$invoice->customer->company_phone ? $invoice->customer->company_phone :
+                                $invoice->customer->contact_person_phone }} {{","}}
+                                {{$invoice->customer->company_email ? $invoice->customer->company_email :
+                                $invoice->customer->contact_person_email}}
                             </td>
                             <td>
 
