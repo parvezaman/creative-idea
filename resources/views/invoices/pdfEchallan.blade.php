@@ -96,7 +96,7 @@
         }
 
         .line-item {
-            border-bottom: 1px solid #333;
+            /* border-bottom: 1px solid #333; */
         }
 
         .signature {
@@ -116,6 +116,7 @@
             padding: 10px;
             background: #f9f9f9;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
         }
     </style>
 </head>
@@ -128,8 +129,9 @@
                     <table>
                         <tr>
                             <td class="title">
-                                <img src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}"
-                                    alt="Company Logo">
+                                {{-- <img
+                                    src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}"
+                                    alt="Company Logo"> --}}
                             </td>
                             <td style="text-align: right;">
                                 E-Challan#: {{ $invoice->invoice_number }}<br>
@@ -189,7 +191,7 @@
                     Quantity
                 </td>
                 <td style="text-align:center;">
-                    Warranty
+                    Remarks
                 </td>
             </tr>
             @foreach ($allInvoices as $myInvoice)
@@ -204,7 +206,7 @@
                     {{ $myInvoice->quantity }}
                 </td>
                 <td style="width: 25%; text-align:center;">
-                    {{ $myInvoice->warranty }}
+                    {{-- {{ $myInvoice->warranty }} --}}
                 </td>
             </tr>
             @endforeach

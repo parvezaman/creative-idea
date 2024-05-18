@@ -8,6 +8,20 @@
             <form method="POST" action="{{ route('vendors.update', $vendor) }}" class="max-w-md mx-auto">
                 @csrf
                 @method('PUT')
+
+                @if($errors->any())
+                <div class="mb-4">
+                    <div class="text-red-600">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                @endif
+
+
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                     <input type="text"

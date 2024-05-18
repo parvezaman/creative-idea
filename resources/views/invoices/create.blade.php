@@ -23,18 +23,6 @@
         <!-- add customer form -->
         <div class="container mx-auto">
             <h2 class="text-2xl font-semibold mb-4">Add Invoice</h2>
-
-            @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li class="text-red">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-
-
             <!-- Invoice creation form -->
             <form id="invoiceForm" method="POST" action="{{ route('invoices.store') }}" class="max-w-md mx-auto">
                 @csrf

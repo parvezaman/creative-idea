@@ -1,95 +1,3 @@
-<style>
-    .button-base {
-        padding: 10px 20px;
-        width: 100%;
-        height: 40px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .button-base:hover {
-        transform: translateY(2px);
-    }
-
-    .edit-button {
-        background-color: #4CAF50;
-        color: white;
-    }
-
-    .delete-button {
-        background-color: #f44336;
-        color: white;
-    }
-
-    .add-customer-container {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .add-button {
-        width: 164px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th,
-    td {
-        padding: 8px;
-        border: 1px solid #ddd;
-        text-align: left;
-    }
-
-    th {
-        background-color: #f2f2f2;
-    }
-
-    tr:hover {
-        background-color: #f5f5f5;
-    }
-
-    .button-container {
-        display: flex;
-        justify-content: center;
-    }
-
-    .button-container button {
-        padding: 8px 16px;
-        margin: 0 4px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .button-container button.edit-button {
-        background-color: #009682;
-        color: white;
-    }
-
-    .button-container button.delete-button {
-        background-color: #f44336;
-        color: white;
-    }
-
-    .button-container button.delete-button:hover {
-        background-color: #f8675c;
-    }
-
-    .button-container button:hover {
-        background-color: #01c9ae;
-    }
-
-    .overflow-x-auto {
-        overflow-x: auto;
-    }
-</style>
-
-
 <x-app-layout>
     <x-slot name="header">
         <div class="add-customer-container">
@@ -98,7 +6,7 @@
     </x-slot>
 
     <x-slot name="main">
-        <div class="overflow-x-auto">
+        <div>
             <table>
                 <thead>
                     <tr>

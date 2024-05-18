@@ -11,7 +11,6 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // $products = Product::all();
         $products = Product::with('vendor')->get();
         return view('products.index', compact('products'));
     }
@@ -24,9 +23,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-
-        // dd($request);
-
 
         $validatedProduct = $request->validate([
             'name' => 'required|string',

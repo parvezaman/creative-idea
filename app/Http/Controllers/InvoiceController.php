@@ -493,11 +493,6 @@ class InvoiceController extends Controller
                 ];
             }
 
-            // $invoiceInfo = [
-            //     'is_paid' => $request->is_paid,
-            //     'payment_method' => $request->payment_method,
-            //     'reference' => $request->reference
-            // ];
             Invoice::where('invoice_number', $invoice->invoice_number)->update($invoiceInfo);
             return redirect()->route('invoices.index')->with('success', 'Invoice updated successfully!');
         } catch (\Exception $e) {

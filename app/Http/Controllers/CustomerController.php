@@ -41,12 +41,8 @@ class CustomerController extends Controller
         ]);
 
 
-        // dd($validatedData);
-
-        // Create a new customer record
         Customer::create($validatedData);
 
-        // Redirect back to the index page with a success message
         return redirect()->route('customers.index')->with('success', 'Customer added successfully!');
     }
 
@@ -58,7 +54,6 @@ class CustomerController extends Controller
 
     public function update(Request $request, Customer $customer)
     {
-        // Validate the incoming request data
         try {
             $validatedData = $request->validate([
                 'contact_person_name' => 'required|string|max:255',
@@ -75,15 +70,11 @@ class CustomerController extends Controller
                 'company_website' => 'nullable|string|max:255'
             ]);
 
-            // Update the customer record in the database
-            // dd($validatedData);      
             $customer->update($validatedData);
 
 
-            // Redirect back to the customer index page with a success message
             return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Redirect back with errors
             return redirect()->back()->withErrors($e->validator)->withInput();
         }
 
@@ -91,10 +82,8 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
-        // Delete the customer record from the database
         $customer->delete();
 
-        // Redirect back to the customer index page with a success message
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully!');
     }
 }

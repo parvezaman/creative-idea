@@ -75,7 +75,6 @@
 
         .invoice-box table tr.total td {
             white-space: nowrap;
-            /* Add this line to prevent text wrapping */
             border-top: 2px solid #eee;
             font-weight: bold;
         }
@@ -91,7 +90,14 @@
         }
 
         .line-item {
-            border-bottom: 1px solid #333;
+            /* border-bottom: 1px solid #333; */
+        }
+
+        .signature {
+            margin-top: 20px;
+            text-align: left;
+            font-size: 12px;
+            line-height: .5;
         }
 
         footer.footer {
@@ -101,6 +107,7 @@
             right: 0;
             text-align: center;
             font-size: 12px;
+            display: none;
         }
     </style>
 </head>
@@ -113,8 +120,9 @@
                     <table>
                         <tr>
                             <td class="title">
-                                <img
+                                {{-- <img
                                     src="data:image/jpg;base64,{{ base64_encode(file_get_contents(public_path('/images/cilogo.jpg'))) }}">
+                                --}}
                             </td>
                             <td style="text-align: right;">
                                 Invoice #: {{ $invoice->invoice_number }}<br>
@@ -130,10 +138,6 @@
                     <table>
                         <tr>
                             <td>
-                                {{-- From, <br>
-                                Level: #3, Shop: #313, Multiplan Computer City Centre, <br>
-                                Eleplant Road, Dhaka<br>
-                                Cell: +880 1711 980 326 --}}
                                 To, <br>
                                 {{$invoice->customer->company_name ?
                                 $invoice->customer->company_name:$invoice->customer->contact_person_name}}<br>
@@ -176,10 +180,10 @@
                 <td>
                     Item
                 </td>
-                <td>
+                <td style="text-align: center;">
                     Quantity
                 </td>
-                <td>
+                <td style="text-align: center;">
                     Unit Price
                 </td>
                 <td>
@@ -192,10 +196,10 @@
                 <td style="width: 30%;">
                     {{$myInvoice->product_name}}
                 </td>
-                <td style="width: 20%;">
+                <td style="width: 20%; text-align: center;">
                     {{$myInvoice->quantity}}
                 </td>
-                <td style="width: 20%;">
+                <td style="width: 20%; text-align: center;">
                     {{$myInvoice->per_unit_price + ($myInvoice->vat/$myInvoice->quantity) +
                     ($myInvoice->tax/$myInvoice->quantity)}}
                 </td>
@@ -211,13 +215,27 @@
                     Total: {{$GrandTotal}}
                 </td>
             </tr>
-            <tr class="total">
-                <td></td>
-                <td colspan="3" style="text-align: right;">
-                    In Words: {{ucwords($inWordsInIndian)}} Taka Only
-                </td>
-            </tr>
         </table>
+
+        <div>
+            <p style="font-weight: bold;">
+                In Words: {{ucwords($inWordsInIndian)}} Taka Only
+            </p>
+        </div>
+        <div>
+            <small>
+                ** The product price includes VAT and taxes.
+            </small>
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="signature">
+            <p>With Best Regards,</p>
+            <h3>Md. Anicil Garebin Gofran</h3>
+            <small>Senior Sales Director</small>
+            <p>Creative Idea</p>
+        </div>
 
         <footer class="footer">
             Level: #3, Shop: #313, Multiplan Computer City Centre, Eleplant Road, Dhaka, Cell: +880 1711 980 326

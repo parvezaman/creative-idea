@@ -1,118 +1,4 @@
-<style>
-    .button-container {
-        display: flex
-    }
-
-    .button-base {
-        padding: 10px 20px;
-        /* width: 100%; */
-        height: 40px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background-color: #4CAF50;
-        color: white;
-        margin-right: 8px;
-    }
-
-    .button-base:hover {
-        transform: translateY(2px);
-    }
-
-    body {
-        /* font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; */
-        color: #333;
-        background-color: #f8f9fa;
-        margin: 0;
-        padding: 0;
-    }
-
-    .invoice-box {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-        font-size: 16px;
-        line-height: 24px;
-        background-color: #fff;
-    }
-
-    .invoice-box table {
-        width: 100%;
-        box-sizing: border-box;
-        line-height: inherit;
-        text-align: left;
-    }
-
-    .invoice-box table td {
-        padding: 5px;
-        vertical-align: top;
-    }
-
-    .invoice-box table tr td:nth-child(4) {
-        text-align: right;
-    }
-
-    .invoice-box table tr.top table td {
-        padding-bottom: 20px;
-    }
-
-    .invoice-box table tr.top table td.title {
-        font-size: 45px;
-        line-height: 45px;
-        color: #333;
-    }
-
-    .invoice-box table tr.information table td {
-        padding-bottom: 40px;
-    }
-
-    .invoice-box table tr.heading td {
-        background: #eee;
-        border-bottom: 1px solid #ddd;
-        font-weight: bold;
-    }
-
-    .invoice-box table tr.details td {
-        padding-bottom: 20px;
-    }
-
-    .invoice-box table tr.item td {
-        border-bottom: 1px solid #eee;
-    }
-
-    .invoice-box table tr.item.last td {
-        border-bottom: none;
-    }
-
-    .invoice-box table tr.total td {
-        white-space: nowrap;
-        /* Add this line to prevent text wrapping */
-        border-top: 2px solid #eee;
-        font-weight: bold;
-    }
-
-    .invoice-box table tr.total td:nth-child(2) {
-        border-top: 2px solid #eee;
-        font-weight: bold;
-    }
-
-    .header-line {
-        border-top: 1px solid #ccc;
-        margin-top: 20px;
-    }
-
-    .line-item {
-        border-bottom: 1px solid #333;
-    }
-</style>
-
 <x-app-layout>
-
-
-
     <x-slot name="main">
         <div class="invoice-box">
             <table cellpadding="0" cellspacing="0">
@@ -138,10 +24,6 @@
                         <table>
                             <tr>
                                 <td>
-                                    {{-- From, <br>
-                                    Level: #3, Shop: #313, Multiplan Computer City Centre, <br>
-                                    Eleplant Road, Dhaka<br>
-                                    Cell: +880 1711 980 326 --}}
                                     To, <br>
                                     {{$invoice->customer->company_name ?
                                     $invoice->customer->company_name:$invoice->customer->contact_person_name}}<br>
@@ -226,13 +108,20 @@
                         Total: &#2547; {{$GrandTotal}}
                     </td>
                 </tr>
-                <tr class="total">
-                    <td></td>
-                    <td colspan="3" style="text-align: right;">
-                        In Words: {{ucwords($inWordsInIndian)}} Taka Only
-                    </td>
-                </tr>
             </table>
+
+            <div>
+                <h1 style="font-weight: bold;">
+                    In Words: {{ucwords($inWordsInIndian)}} Taka Only
+                </h1>
+            </div>
+            <br>
+            <br>
+            <div>
+                <small>
+                    ** The product price includes VAT and taxes.
+                </small>
+            </div>
         </div>
         <div class="button-container">
             <form action="{{ route('invoices.generate_invoice', $invoice) }}" method="GET">
