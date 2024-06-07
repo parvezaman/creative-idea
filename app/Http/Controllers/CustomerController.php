@@ -28,8 +28,8 @@ class CustomerController extends Controller
         $validatedData = $request->validate([
             'contact_person_name' => 'required|string|max:255',
             'company_name' => 'required|string|max:255',
-            'contact_person_email' => 'required|email|unique:customers,contact_person_email|max:255',
-            'company_email' => 'required|email|unique:customers,company_email|max:255',
+            'contact_person_email' => 'required|email|max:255',
+            'company_email' => 'required|email|max:255',
             'date_of_birth' => 'nullable|date',
             'contact_person_address' => 'nullable|string|max:255',
             'company_address' => 'nullable|string|max:255',
@@ -58,8 +58,8 @@ class CustomerController extends Controller
             $validatedData = $request->validate([
                 'contact_person_name' => 'required|string|max:255',
                 'company_name' => 'required|string|max:255',
-                'contact_person_email' => 'required|email|unique:customers,contact_person_email|max:255',
-                'company_email' => 'required|email|unique:customers,company_email|max:255',
+                'contact_person_email' => 'required|email|max:255',
+                'company_email' => 'required|email|max:255',
                 'date_of_birth' => 'nullable|date',
                 'contact_person_address' => 'nullable|string|max:255',
                 'company_address' => 'nullable|string|max:255',
