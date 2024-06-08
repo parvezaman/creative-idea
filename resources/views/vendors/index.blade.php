@@ -31,7 +31,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Sl.</th>
                         <th>Name</th>
                         <th>Product Type</th>
                         <th>Address</th>
@@ -40,9 +40,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($vendors as $vendor)
+                    @foreach($vendors as $index => $vendor)
                     <tr>
-                        <td>{{ $vendor->id }}</td>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $vendor->name }}</td>
                         <td>{{ $vendor-> product_type}}</td>
                         <td>{{ $vendor-> address}}</td>

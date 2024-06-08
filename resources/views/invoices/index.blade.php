@@ -31,7 +31,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Sl.</th>
                         <th>Invoice Number</th>
                         {{-- <th>Subject</th> --}}
                         <th>Customer</th>
@@ -47,9 +47,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($invoices as $invoice)
+                    @foreach($invoices as $index => $invoice)
                     <tr>
-                        <td>{{ $invoice->id }}</td>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $invoice->invoice_number }}</td>
                         {{-- <td>{{ $invoice->subject }}</td> --}}
                         <td>{{ $invoice->customer->company_name }}</td>

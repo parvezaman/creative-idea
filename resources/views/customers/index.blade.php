@@ -31,7 +31,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Sl.</th>
                         <th>Contact Person</th>
                         <th>Email</th>
                         {{-- <th>Date of Birth</th> --}}
@@ -45,9 +45,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($customers as $customer)
+                    @foreach($customers as $index => $customer)
                     <tr>
-                        <td>{{ $customer->id }}</td>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $customer->contact_person_name }}</td>
                         <td>{{ $customer->contact_person_email }}</td>
                         {{-- <td>{{ $customer->date_of_birth }}</td> --}}

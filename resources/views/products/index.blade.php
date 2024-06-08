@@ -31,7 +31,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>Sl.</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Vendor Name</th>
@@ -45,9 +45,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($products as $product)
+                    @foreach($products as $index => $product)
                     <tr>
-                        <td>{{ $product->id }}</td>
+                        <td>{{ $index + 1 }}</td>
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->description }}</td>
                         <td>{{ $product->vendor->name }}</td>

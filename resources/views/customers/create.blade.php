@@ -49,13 +49,15 @@
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         id="company_email" name="company_email" placeholder="Enter Company email">
                 </div>
-                <div class="mb-4">
+
+                {{-- <div class="mb-4">
                     <label for="date_of_birth" class="block text-sm font-medium text-gray-700">Contact Person Date of
                         Birth</label>
                     <input type="date"
                         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         id="date_of_birth" name="date_of_birth" placeholder="Enter date of birth">
-                </div>
+                </div> --}}
+
                 <div class="mb-4">
                     <label for="contact_person_address" class="block text-sm font-medium text-gray-700">Contact Person
                         Address</label>
